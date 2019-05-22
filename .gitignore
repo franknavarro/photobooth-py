@@ -4,5 +4,4 @@ __pycache__/
 *$py.class
 
 #vim files
-.*.swp
-.*.swo
+.*.sw[nop]
