@@ -4,12 +4,15 @@ import sys
 class RootWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.attributes('-fullscreen', True)
+        #self.attributes('-fullscreen', True)
+        self.geometry("500x500")
+        self.configure(cursor='none')
         container = ApplicationFrame(self)
         self.bind('<Escape>', self.close)
     
     def show_frame(self, cont):
         frame = self.frames[cont]
+        frame.focus_set()
         frame.tkraise()
 
     def close(self, event):
@@ -34,8 +37,26 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        label = tk.Label(self, text="PRESS BUTTON", font=("Verdana",12))
-        label.pack(pady=10,padx=10)
+	# Center page 
+        self.configure(background='white')
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+	# Add name of application to center
+        appname = tk.Label(self, text="Photobooth", font=("Droid",50,'bold italic'))
+        appname.grid(row=0, column=0, sticky="nsew")
+
+        # Add push button text to bottom
+        instruct = tk.Label(self, text="Push button to start", font=("Droid", 25, 'bold'))
+        instruct.grid(row=1, column=0, sticky='sew')
+
+        # Bind Space bar to go to camera event
+        print("Starting Bind")
+        self.bind('<space>', self.startcam)
+
+
+    def startcam(self, event):
+        print("Starting Camera Service...")
 
 
 
