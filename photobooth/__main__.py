@@ -27,6 +27,11 @@ def WaitForUser():
                 if event.key == pygame.K_DOWN:
                     FoundKeyPress = True
 
+            # Userf closed out of app with 'X' button in top left
+            if event.type == pygame.QUIT:
+                FoundKeyPress = True
+                running = False
+
 
 
 # Keep the application running

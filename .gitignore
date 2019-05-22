@@ -1,2 +1,7 @@
+# Byte-compiled / optomized
+__pycache__/
+*.py[cod]
+*$py.class
+
 #vim files
 .*.swp
