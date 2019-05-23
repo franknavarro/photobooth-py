@@ -1,5 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+from photobooth.camera import Camera
 
 class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -13,6 +14,9 @@ class CameraPage(tk.Frame):
 
         self.size = controller.get_size()
 
+        self.camera = Camera(self.size)
+        self.camera.start()
+
         count = CountDown(self)
 
 
@@ -25,5 +29,6 @@ class CountDown(tk.Canvas):
         self.backImage = Image.new('RGBA', parent.size, (0, 0, 0, 255//2))
         self.background = ImageTk.PhotoImage(self.backImage)
         self.create_image(0, 0, image=self.background, anchor="nw")
+
 
         
