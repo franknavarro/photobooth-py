@@ -39,6 +39,7 @@ sudo apt-get install libopenjp2-7 -y
 sudo apt-get install libtiff5 -y
 
 sudo apt-get install python-pip python3-pip -y
+sudo-apt get install python3-pil python3-imagetk
 
 pip install Pillow
 pip3 install Pillow
