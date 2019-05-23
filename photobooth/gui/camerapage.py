@@ -17,18 +17,27 @@ class CameraPage(tk.Frame):
         self.camera = Camera(self.size)
         self.camera.start()
 
+
         count = CountDown(self)
 
 
-class CountDown(tk.Canvas):
+class CountDown(tk.Label):
     def __init__(self, parent):
-        tk.Canvas.__init__(self, parent, height=parent.size[0], width=parent.size[1])
+        tk.Label.__init__(self, parent, text="GET READY!!!", font=("Droid", 75, "bold"), bg="black", fg="white")
         self.grid(row=0, column=0, sticky="nsew")
 
-        # Create the transparent black box over the camera image
-        self.backImage = Image.new('RGBA', parent.size, (0, 0, 0, 255//2))
-        self.background = ImageTk.PhotoImage(self.backImage)
-        self.create_image(0, 0, image=self.background, anchor="nw")
+        self.count = 3
+        self.after(1000, self.updateCounter)
+
+    def updateCounter(self):
+        if self.count > 0:
+            self.configure(text=self.count, font=("Droid", 200, "bold"))
+            self.count -= 1
+            self.after(1000, self.updateCounter)
+        else:
+            self.configure(text="STRIKE A POSE", font=("Droid", 75, "bold"))
+            self.after(1000, self.destroy)
+
 
 
         
