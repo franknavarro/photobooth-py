@@ -1,5 +1,6 @@
 import tkinter as tk
 from photobooth.camera import Camera
+from photobooth.pictures import Photostrip
 
 class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -16,14 +17,17 @@ class CameraPage(tk.Frame):
         self.camera = Camera(self.size)
         self.camera.start()
 
+        self.photostrip = Photostrip()
 
-        count = CountDown(self, self.camera)
+
+        count = CountDown(self, self.camera, self.photostrip)
 
 
 class CountDown(tk.Label):
-    def __init__(self, parent, cam):
+    def __init__(self, parent, camera, photostrip):
         tk.Label.__init__(self, parent, text="GET READY!!!", font=("Droid", 75, "bold"), bg="black", fg="white")
-        self.cam = cam
+        self.camera = camera
+        self.photostrip = photostrip
         self.startCountDown()
 
 
@@ -35,11 +39,15 @@ class CountDown(tk.Label):
         else:
             self.configure(text="STRIKE A POSE", font=("Droid", 75, "bold"))
             self.after(1000, self.grid_forget)
-            self.after(1250, self.cam.finish)
+            self.after(1250, self.finishCountDown)
             
 
     def startCountDown(self):
         self.count = 3
         self.grid(row=0, column=0, sticky="nsew")
         self.after(1000, self.updateCounter)
+
+    def finishCountDown(self):
+        self.photostrip.photos.append(self.camera.finish())
+        print(self.photostrip.photos)
 

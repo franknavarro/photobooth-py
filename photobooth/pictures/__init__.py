@@ -1,5 +1,5 @@
 from PIL import Image 
 
-class Pictures():
-    def __init__(self, path):
-        self.path = path
+class Photostrip():
+    def __init__(self):
+        self.photos = []

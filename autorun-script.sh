@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sudo python3 -m photobooth
+python3 -m photobooth
