@@ -6,7 +6,7 @@ class Camera(picamera.PiCamera):
     def __init__(self, resolution):
         picamera.PiCamera.__init__(self)
 
-        self.resolution = resolution
+        self.resolution = (1280, 720)
         self.rotation              = 0
         self.hflip                 = True
         self.vflip                 = False
@@ -48,8 +48,6 @@ class Camera(picamera.PiCamera):
         imgPath = os.path.join(picPath, imgName)
         print("Image Path: ", imgPath)
         self.capture(imgPath)
-
         self.stop_preview()
 
         return imgPath
-
