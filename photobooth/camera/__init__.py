@@ -1,4 +1,6 @@
 import picamera
+import os
+import time
 
 class Camera(picamera.PiCamera):
     def __init__(self, resolution):
@@ -9,8 +11,8 @@ class Camera(picamera.PiCamera):
         self.hflip                 = True
         self.vflip                 = False
         self.brightness            = 50
-        self.preview_alpha = 120
-        self.preview_fullscreen = True
+        self.preview_alpha         = 100
+        self.preview_fullscreen    = True
         #self.framerate             = 24
         #self.sharpness             = 0
         #self.contrast              = 8
@@ -30,7 +32,24 @@ class Camera(picamera.PiCamera):
         print("Camera Resolution at ",self.resolution)
         self.start_preview()
 
-    def stop(self):
+    def finish(self):
         print("Stoping Camera Feed...")
+
+        # Check the folder path
+        folderPath = ("Pictures", "singles")
+        picPath = os.path.expanduser("~")
+        for folder in folderPath:
+            picPath = os.path.join(picPath, folder) 
+            if not os.path.isdir(picPath):
+                os.makedirs(picPath)	
+
+        imgTime = time.strftime("%Y-%m-%d_%H.%M.%S")
+        imgName = "".join(("photobooth_",imgTime,".jpg"))
+        imgPath = os.path.join(picPath, imgName)
+        print("Image Path: ", imgPath)
+        self.capture(imgPath)
+
         self.stop_preview()
+
+        return imgPath
 

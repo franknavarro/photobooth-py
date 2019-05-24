@@ -1,5 +1,4 @@
 import tkinter as tk
-from PIL import Image, ImageTk
 from photobooth.camera import Camera
 
 class CameraPage(tk.Frame):
@@ -18,16 +17,15 @@ class CameraPage(tk.Frame):
         self.camera.start()
 
 
-        count = CountDown(self)
+        count = CountDown(self, self.camera)
 
 
 class CountDown(tk.Label):
-    def __init__(self, parent):
+    def __init__(self, parent, cam):
         tk.Label.__init__(self, parent, text="GET READY!!!", font=("Droid", 75, "bold"), bg="black", fg="white")
-        self.grid(row=0, column=0, sticky="nsew")
+        self.cam = cam
+        self.startCountDown()
 
-        self.count = 3
-        self.after(1000, self.updateCounter)
 
     def updateCounter(self):
         if self.count > 0:
@@ -36,8 +34,12 @@ class CountDown(tk.Label):
             self.after(1000, self.updateCounter)
         else:
             self.configure(text="STRIKE A POSE", font=("Droid", 75, "bold"))
-            self.after(1000, self.destroy)
+            self.after(1000, self.grid_forget)
+            self.after(1250, self.cam.finish)
+            
 
+    def startCountDown(self):
+        self.count = 3
+        self.grid(row=0, column=0, sticky="nsew")
+        self.after(1000, self.updateCounter)
 
-
-        
