@@ -7,21 +7,57 @@ class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-
-        # Initialize the camera
         self.size = controller.get_size()
-        self.camera = Camera(self.size)
+        cameraResolution = (720, 720)
+        # Get the height of the camera window frame
+        camY = 200 # Also defines the padding for the top/bottom
+        camH = int(self.size[1] - camY*2)
+
+        # Get the width of the camera window frame
+        camW = int(camH * cameraResolution[0] / cameraResolution[1])
+        camX = int((self.size[0] - camW) / 2) #Also defines the padding for the left/right
+        cameraSize = (camX, camY, camW, camH)
+
+        print("Camera Size: {}x, {}y, {}w, {}h".format(camX, camY, camW, camH))
+
+        # Initialize the grid
+        self.grid_columnconfigure(0, weight=1, minsize=camX)
+        self.grid_columnconfigure(2, weight=1, minsize=camX)
+        self.grid_rowconfigure(0, weight=1, minsize=camY)
+        self.grid_rowconfigure(2, weight=1, minsize=camY)
+
+        self.textFrame = tk.Frame(self, bg="blue")
+        self.textFrame.grid(row=0, column=0, columnspan=3, sticky="nsew")
+        self.textFrame.grid_columnconfigure(0, weight=1)
+        self.textFrame.grid_rowconfigure(0, weight=1)
+        self.readyText = tk.Label(self.textFrame, text="Get Ready!!!", font=("Droid", 65, "bold"), bg=self.textFrame["bg"])
+        self.readyText.grid(row=0, column=0, sticky="nsew")
+
+        self.cameraPad1 = tk.Frame(self, bg="yellow")
+        self.cameraPad1.grid(row=1, column=0, sticky="nsew")
+
+        self.cameraFrame = tk.Frame(self, width=camW, height=camH, bg="black")
+        self.cameraFrame.grid(row=1, column=1, sticky="nsew")
+        self.cameraFrame.update_idletasks()
+        print("Camera Frame: {}w, {}h".format(self.cameraFrame.winfo_width(), self.cameraFrame.winfo_height()))
+
+        self.cameraPad2 = tk.Frame(self, bg="green")
+        self.cameraPad2.grid(row=1, column=2, sticky="nsew")
+
+        self.textFrame2 = tk.Frame(self, bg="red")
+        self.textFrame2.grid(row=2, column=0, columnspan=3, sticky="nsew")
+
+        self.camera = Camera(cameraSize, cameraResolution)
+        self.camera.start()
 
         # Initialize the photostrip
-        self.photostrip = Photostrip()
+        # self.photostrip = Photostrip()
 
         # Initialize the count down sequence
-        self.countdown = CountDown(self)
+        # self.countdown = CountDown(self)
 
         # Initialize the Photo Counter
-        self.picCount = PictureCount(self)
+        # self.picCount = PictureCount(self)
 
 
 class CountDown(tk.Label):

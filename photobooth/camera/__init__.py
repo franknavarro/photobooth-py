@@ -3,16 +3,18 @@ import os
 import time
 
 class Camera(picamera.PiCamera):
-    def __init__(self, resolution):
+    def __init__(self, camSize, camResolution):
         picamera.PiCamera.__init__(self)
 
-        self.resolution = (1280, 720)
+        self.resolution = camResolution
+
         self.rotation              = 0
         self.hflip                 = True
         self.vflip                 = False
         self.brightness            = 50
-        self.preview_alpha         = 100
-        self.preview_fullscreen    = True
+        self.preview_alpha         = 0
+        self.preview_fullscreen    = False
+        self.preview_window        = camSize
         #self.framerate             = 24
         #self.sharpness             = 0
         #self.contrast              = 8
