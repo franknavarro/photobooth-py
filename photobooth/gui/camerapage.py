@@ -1,5 +1,4 @@
 import tkinter as tk
-from PIL import Image, ImageTk
 from photobooth.camera import Camera
 from photobooth.pictures import Photostrip
 
@@ -8,6 +7,8 @@ class CameraPage(tk.Frame):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
 
         self.size = controller.get_size()
+        print("Screen Size: {}w, {}h".format(self.size[0], self.size[1]))
+
         cameraResolution = (1280, 720)
         # Get the height of the camera window frame
         camY = 200 # Also defines the padding for the top/bottom
@@ -16,40 +17,33 @@ class CameraPage(tk.Frame):
         # Get the width of the camera window frame
         camW = int(camH * cameraResolution[0] / cameraResolution[1])
         camX = int((self.size[0] - camW) / 2) #Also defines the padding for the left/right
-        cameraSize = (camX, camY, camW, camH)
+        cameraPosition = (camX, camY, camW, camH)
+        self.cameraViewSize = (camW, camH)
 
         print("Camera Size: {}x, {}y, {}w, {}h".format(camX, camY, camW, camH))
 
         # Initialize the grid
-        self.grid_columnconfigure(0, weight=1, minsize=camX)
-        self.grid_columnconfigure(2, weight=1, minsize=camX)
+        self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1, minsize=camY)
+        self.grid_rowconfigure(1, weight=1, minsize=camH)
         self.grid_rowconfigure(2, weight=1, minsize=camY)
+
 
         # Initialize the text above the camera
         self.topText = LabelText(self, "PHOTOBOOTH")
-        self.topText.grid(row=0, column=0, columnspan=3, sticky="nsew")
-
-        # Initialize the left camera padding
-        self.cameraPad1 = tk.Frame(self, bg=parent["bg"])
-        self.cameraPad1.grid(row=1, column=0, sticky="nsew")
+        self.topText.grid(row=0, column=0, sticky="nsew")
 
         # Initialize the frame behind the camera
-        self.cameraFrame = tk.Frame(self, width=camW, height=camH, bg=parent["bg"])
-        self.cameraFrame.grid(row=1, column=1, sticky="nsew")
-        self.cameraFrame.update_idletasks()
-        print("Camera Frame: {}w, {}h".format(self.cameraFrame.winfo_width(), self.cameraFrame.winfo_height()))
+        self.cameraFrame = CameraFrame(self, cameraPosition)
+        self.cameraFrame.grid(row=1, column=0, sticky="nsew")
 
-        # Initialize the right camera padding
-        self.cameraPad2 = tk.Frame(self, bg=parent["bg"])
-        self.cameraPad2.grid(row=1, column=2, sticky="nsew")
 
         # Initialize the text below the camera
         self.botText = LabelText(self, "PUSH BUTTON TO START")
-        self.botText.grid(row=2, column=0, columnspan=3, sticky="nsew")
+        self.botText.grid(row=2, column=0, sticky="nsew")
 
         # Start the camera service
-        self.camera = Camera(cameraSize, cameraResolution)
+        self.camera = Camera(cameraPosition, cameraResolution)
         self.camera.start()
 
         # Initialize the photostrip
@@ -58,7 +52,7 @@ class CameraPage(tk.Frame):
 
         #Initialize the count down sequence
         self.maxCountDown = 5
-        # self.photostrip = Photostrip()
+        self.photostrip = Photostrip()
 
         # Initialize the count down sequence
         # self.countdown = CountDown(self)
@@ -68,39 +62,56 @@ class CameraPage(tk.Frame):
         self.focus_set()
         self.bind('<space>', self.startCaptures)
         
+    # Start the process of taking photos
     def startCaptures(self, event):
+        # Unbind the space bar event that triggers this function
         self.unbind('<space>')
+
+        # Set the photo count down number
         self.currentCountDown = self.maxCountDown
+
+        # Display which photo number this is along with get ready text
         self.topText.updateText("Photo {} of {}".format(self.photoNumber, self.maxPhotos))
         self.botText.updateText("Get Ready!!!")
+
+        # Start counting down for first photo
         self.after(1000, self.updateCountDown)
 
 
+    # Decrement the count down number by 1
     def updateCountDown(self):
+        # Only decrement if less than 0
         if self.currentCountDown > 0:
             self.botText.updateText(self.currentCountDown)
             self.currentCountDown -= 1
             self.after(1000, self.updateCountDown)
+        # If count down is at zero then take a photo
         else:
-            self.botText.updateText("STRIKE A POSE")
-            self.after(1000, self.takePhoto)
+            self.botText.updateText("SNAP")
+            self.after(500, self.takePhoto)
 
+
+    # Process to take a photo and display it for the user to see
     def takePhoto(self):
         self.topText.hideText()
         self.botText.hideText()
+        image = self.camera.takePic()
+        self.camera.stop()
+        self.photostrip.addPhoto(image, self.cameraViewSize)
+        self.cameraFrame.updatePicture(self.photostrip.photosTK[-1])
 
 
 # A class to format the bottom and top text of the application
 class LabelText(tk.Frame):
     def __init__(self, parent, initText):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, bg=parent["bg"])
 
         # Size the contents of this Frame appropriately
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
         # Add the text to this frame
-        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=parent["bg"], fg="white")
+        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=self["bg"], fg="white")
         # Position this text in the frame
         self.text.grid(row=0, column=0, sticky="nsew")
 
@@ -109,6 +120,50 @@ class LabelText(tk.Frame):
 
     def hideText(self):
         self.text.configure(text="")
+
+
+# A place holder for where the camera sits and where the cameras taken photos will be displayed
+class CameraFrame(tk.Frame):
+    def __init__(self, parent, cameraPosition):
+        tk.Frame.__init__(self, parent, bg=parent["bg"])
+
+        # Size the contents in the camera frame properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1, minsize=cameraPosition[0])
+        self.grid_columnconfigure(1, weight=1, minsize=cameraPosition[3])
+        self.grid_columnconfigure(2, weight=1, minsize=cameraPosition[0])
+
+        # Padding to the left of the camera
+        self.cameraPad1 = tk.Frame(self, bg=self["bg"])
+        self.cameraPad1.grid(row=0, column=0, sticky="nsew")
+
+        # A Label where the camera will sit over and where pictures will be displayed
+        self.picture = tk.Label(self, width=cameraPosition[2], height=cameraPosition[3], bg=self["bg"])
+        self.picture.grid(row=0, column=1, sticky="nsew")
+
+        # Padding to the right of the camera
+        self.cameraPad2 = tk.Frame(self, bg=self["bg"])
+        self.cameraPad2.grid(row=0, column=2, sticky="nsew")
+
+
+        # Display the Camera Frame size for reference
+        self.update_idletasks()
+        print("Camera Frame: {}w, {}h".format(self.winfo_width(), self.winfo_height()))
+
+    def updatePicture(self, img):
+        self.picture.configure(image=img)
+
+    def hidePicture(self):
+        self.picture.configure(image="")
+
+
+
+
+
+
+
+
+
 
 class CountDown(tk.Label):
     def __init__(self, parent):

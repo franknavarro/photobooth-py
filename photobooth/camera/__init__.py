@@ -37,7 +37,7 @@ class Camera(picamera.PiCamera):
         print("Stoping Camera Feed...")
         self.stop_preview()
 
-    def capture(self):
+    def takePic(self):
 
         # Check the folder path
         folderPath = ("Pictures", "singles")
