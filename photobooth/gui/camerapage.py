@@ -47,7 +47,7 @@ class CameraPage(tk.Frame):
         self.camera.start()
 
         # Initialize the photostrip
-        self.photoNumber = 1
+        self.photoNumber = 0
         self.maxPhotos = 3
 
         #Initialize the count down sequence
@@ -67,15 +67,38 @@ class CameraPage(tk.Frame):
         # Unbind the space bar event that triggers this function
         self.unbind('<space>')
 
-        # Set the photo count down number
-        self.currentCountDown = self.maxCountDown
+        # Display the get ready text
+        self.botText.updateText("Get ready!!!")
+        # Start taking photos
+        self.readyUpPictures()
 
-        # Display which photo number this is along with get ready text
-        self.topText.updateText("Photo {} of {}".format(self.photoNumber, self.maxPhotos))
-        self.botText.updateText("Get Ready!!!")
 
-        # Start counting down for first photo
-        self.after(1000, self.updateCountDown)
+
+    def readyUpPictures(self):
+        # Hide the picuture behind the camera
+        # I delay the hide so that the screen doesn't look like it 
+        # flashes with everything changing all at once
+        self.after(500, self.cameraFrame.hidePicture)
+
+        if self.photoNumber < self.maxPhotos:
+            # Update the count down number and photo number
+            self.currentCountDown = self.maxCountDown
+            self.photoNumber += 1
+
+            # Start the camera only if this isn't the first photo
+            # Because that would mean that the camera is already running
+            if self.photoNumber != 0:
+                self.camera.start()
+
+
+            # Display which photo number this is 
+            self.topText.updateText("Photo {} of {}".format(self.photoNumber, self.maxPhotos))
+
+            # Start counting down 
+            self.after(1000, self.updateCountDown)
+        else:
+            self.topText.hideText()
+            self.botText.hideText()
 
 
     # Decrement the count down number by 1
@@ -93,12 +116,28 @@ class CameraPage(tk.Frame):
 
     # Process to take a photo and display it for the user to see
     def takePhoto(self):
-        self.topText.hideText()
-        self.botText.hideText()
-        image = self.camera.takePic()
+        # Add text to the top of the screen to make the person feel good
+        self.topText.updateText("Looking gooood")
+
+        # Add text for the next photo if there is a next photo
+        if self.photoNumber < self.maxPhotos:
+            self.botText.updateText("Get ready for the next one!!!")
+        else: 
+            self.botText.hideText()
+
+        # Take the picture
+        imagePath = self.camera.takePic()
+        # Stop the camera
         self.camera.stop()
-        self.photostrip.addPhoto(image, self.cameraViewSize)
+
+        # Add the image to our photostrip
+        self.photostrip.addPhoto(imagePath, self.cameraViewSize)
+
+        # Display the photo on the screen
         self.cameraFrame.updatePicture(self.photostrip.photosTK[-1])
+
+        # Take next photo
+        self.after(2000, self.readyUpPictures)
 
 
 # A class to format the bottom and top text of the application
@@ -146,13 +185,11 @@ class CameraFrame(tk.Frame):
         self.cameraPad2.grid(row=0, column=2, sticky="nsew")
 
 
-        # Display the Camera Frame size for reference
-        self.update_idletasks()
-        print("Camera Frame: {}w, {}h".format(self.winfo_width(), self.winfo_height()))
-
+    # Add a picture to the screen
     def updatePicture(self, img):
         self.picture.configure(image=img)
 
+    # Remove the picture from the screen
     def hidePicture(self):
         self.picture.configure(image="")
 
