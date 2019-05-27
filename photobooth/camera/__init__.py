@@ -31,11 +31,13 @@ class Camera(picamera.PiCamera):
 
     def start(self):
         print("Starting Camera Feed...")
-        print("Camera Resolution at ",self.resolution)
         self.start_preview()
 
-    def finish(self):
+    def stop(self):
         print("Stoping Camera Feed...")
+        self.stop_preview()
+
+    def capture(self):
 
         # Check the folder path
         folderPath = ("Pictures", "singles")
@@ -48,8 +50,7 @@ class Camera(picamera.PiCamera):
         imgTime = time.strftime("%Y-%m-%d_%H.%M.%S")
         imgName = "".join(("photobooth_",imgTime,".jpg"))
         imgPath = os.path.join(picPath, imgName)
-        print("Image Path: ", imgPath)
         self.capture(imgPath)
-        self.stop_preview()
+        print("Image Captured and Saved to: ", imgPath)
 
         return imgPath
