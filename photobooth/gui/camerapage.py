@@ -5,10 +5,10 @@ from photobooth.pictures import Photostrip
 
 class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, bg=parent["bg"])
 
         self.size = controller.get_size()
-        cameraResolution = (720, 720)
+        cameraResolution = (1280, 720)
         # Get the height of the camera window frame
         camY = 200 # Also defines the padding for the top/bottom
         camH = int(self.size[1] - camY*2)
@@ -26,27 +26,29 @@ class CameraPage(tk.Frame):
         self.grid_rowconfigure(0, weight=1, minsize=camY)
         self.grid_rowconfigure(2, weight=1, minsize=camY)
 
-        self.textFrame = tk.Frame(self, bg="blue")
-        self.textFrame.grid(row=0, column=0, columnspan=3, sticky="nsew")
-        self.textFrame.grid_columnconfigure(0, weight=1)
-        self.textFrame.grid_rowconfigure(0, weight=1)
-        self.readyText = tk.Label(self.textFrame, text="Get Ready!!!", font=("Droid", 65, "bold"), bg=self.textFrame["bg"])
-        self.readyText.grid(row=0, column=0, sticky="nsew")
+        # Initialize the text above the camera
+        self.topText = LabelText(self, "PHOTOBOOTH")
+        self.topText.grid(row=0, column=0, columnspan=3, sticky="nsew")
 
-        self.cameraPad1 = tk.Frame(self, bg="yellow")
+        # Initialize the left camera padding
+        self.cameraPad1 = tk.Frame(self, bg=parent["bg"])
         self.cameraPad1.grid(row=1, column=0, sticky="nsew")
 
-        self.cameraFrame = tk.Frame(self, width=camW, height=camH, bg="black")
+        # Initialize the frame behind the camera
+        self.cameraFrame = tk.Frame(self, width=camW, height=camH, bg=parent["bg"])
         self.cameraFrame.grid(row=1, column=1, sticky="nsew")
         self.cameraFrame.update_idletasks()
         print("Camera Frame: {}w, {}h".format(self.cameraFrame.winfo_width(), self.cameraFrame.winfo_height()))
 
-        self.cameraPad2 = tk.Frame(self, bg="green")
+        # Initialize the right camera padding
+        self.cameraPad2 = tk.Frame(self, bg=parent["bg"])
         self.cameraPad2.grid(row=1, column=2, sticky="nsew")
 
-        self.textFrame2 = tk.Frame(self, bg="red")
-        self.textFrame2.grid(row=2, column=0, columnspan=3, sticky="nsew")
+        # Initialize the text below the camera
+        self.botText = LabelText(self, "PUSH BUTTON TO START")
+        self.topText.grid(row=0, column=0, columnspan=3, sticky="nsew")
 
+        # Start the camera service
         self.camera = Camera(cameraSize, cameraResolution)
         self.camera.start()
 
@@ -59,6 +61,26 @@ class CameraPage(tk.Frame):
         # Initialize the Photo Counter
         # self.picCount = PictureCount(self)
 
+
+# A class to format the bottom and top text of the application
+class LabelText(tk.Frame):
+    def __init__(self, parent, initText):
+        tk.Frame.__init__(self, parent)
+
+        # Size the contents of this Frame appropriately
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        # Add the text to this frame
+        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=parent["bg"], fg="black")
+        # Position this text in the frame
+        self.text.grid(row=0, column=0, sticky="nsew")
+
+    def updateText(self, newText):
+        self.text.configure(text=newText)
+
+    def hideText(self):
+        self.text.configure(text="")
 
 class CountDown(tk.Label):
     def __init__(self, parent):

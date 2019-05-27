@@ -22,7 +22,7 @@ class RootWindow(tk.Tk):
         self.bind('<Escape>', self.close)
 
         # Create container to hold all frames
-        self.container = tk.Frame(self)
+        self.container = tk.Frame(self, bg="#d6e2f0")
         self.container.pack(side="top", fill="both", expand=True)
 
         # Center container in window
@@ -33,7 +33,7 @@ class RootWindow(tk.Tk):
         self.frames = {}
 
         # Show the start page to begin with
-        self.load_frame(StartPage)
+        self.load_frame(CameraPage)
 
     
     # Function to display a loaded frames in the app

@@ -12,7 +12,7 @@ class Camera(picamera.PiCamera):
         self.hflip                 = True
         self.vflip                 = False
         self.brightness            = 50
-        self.preview_alpha         = 0
+        self.preview_alpha         = 255
         self.preview_fullscreen    = False
         self.preview_window        = camSize
         #self.framerate             = 24
