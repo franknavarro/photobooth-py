@@ -46,7 +46,7 @@ class CameraPage(tk.Frame):
 
         # Initialize the text below the camera
         self.botText = LabelText(self, "PUSH BUTTON TO START")
-        self.topText.grid(row=0, column=0, columnspan=3, sticky="nsew")
+        self.botText.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
         # Start the camera service
         self.camera = Camera(cameraSize, cameraResolution)
@@ -72,7 +72,7 @@ class LabelText(tk.Frame):
         self.grid_rowconfigure(0, weight=1)
 
         # Add the text to this frame
-        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=parent["bg"], fg="black")
+        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=parent["bg"], fg="white")
         # Position this text in the frame
         self.text.grid(row=0, column=0, sticky="nsew")
 
