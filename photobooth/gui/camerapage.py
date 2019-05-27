@@ -53,6 +53,11 @@ class CameraPage(tk.Frame):
         self.camera.start()
 
         # Initialize the photostrip
+        self.photoNumber = 1
+        self.maxPhotos = 3
+
+        #Initialize the count down sequence
+        self.maxCountDown = 5
         # self.photostrip = Photostrip()
 
         # Initialize the count down sequence
@@ -60,6 +65,29 @@ class CameraPage(tk.Frame):
 
         # Initialize the Photo Counter
         # self.picCount = PictureCount(self)
+        self.focus_set()
+        self.bind('<space>', self.startCaptures)
+        
+    def startCaptures(self, event):
+        self.unbind('<space>')
+        self.currentCountDown = self.maxCountDown
+        self.topText.updateText("Photo {} of {}".format(self.photoNumber, self.maxPhotos))
+        self.botText.updateText("Get Ready!!!")
+        self.after(1000, self.updateCountDown)
+
+
+    def updateCountDown(self):
+        if self.currentCountDown > 0:
+            self.botText.updateText(self.currentCountDown)
+            self.currentCountDown -= 1
+            self.after(1000, self.updateCountDown)
+        else:
+            self.botText.updateText("STRIKE A POSE")
+            self.after(1000, self.takePhoto)
+
+    def takePhoto(self):
+        self.topText.hideText()
+        self.botText.hideText()
 
 
 # A class to format the bottom and top text of the application
