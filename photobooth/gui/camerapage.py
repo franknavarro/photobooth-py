@@ -1,6 +1,6 @@
 import tkinter as tk
 from photobooth.camera import Camera
-from photobooth.pictures import Photostrip
+from photobooth.pictures import StripEqualLogo
 
 class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -47,12 +47,12 @@ class CameraPage(tk.Frame):
         self.camera.start()
 
         # Initialize the photostrip
+        self.photostrip = StripEqualLogo()
         self.photoNumber = 0
-        self.maxPhotos = 3
+        self.maxPhotos = self.photostrip.photoCount
 
         #Initialize the count down sequence
         self.maxCountDown = 5
-        self.photostrip = Photostrip()
 
         # Initialize the count down sequence
         # self.countdown = CountDown(self)
