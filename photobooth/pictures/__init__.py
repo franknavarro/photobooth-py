@@ -7,6 +7,7 @@ class Photostrip():
         # Save photos being used
         self.photoPaths = []
         self.photosTK = []
+        self.photos = []
 
         # Set the folder for the user where we will store all our content
         folderPathList = ("Pictures", "Photobooth")
@@ -38,13 +39,19 @@ class Photostrip():
         # Set wether the photo strip will have a logo
         self.hasLogo = False
 
-    def addPhoto(self, photoPath, viewSize):
-        # Open the image as a tkinter image
-        imgOpen = Image.open(photoPath).resize(viewSize, Image.ANTIALIAS)
-        imgTK = ImageTk.PhotoImage(imgOpen)
-        # Save the photos in this class
+    def addPhoto(self, photoPath, cameraViewSize):
+        # Save the path for the photo
         self.photoPaths.append(photoPath)
+
+        # Save the image for stitching later
+        imgOpen = Image.open(photoPath)
+        self.photos.append(imgOpen)
+
+        # Save the image as a tk image object to display on screen
+        imgResized = imgOpen.resize(cameraViewSize, Image.ANTIALIAS)
+        imgTK = ImageTk.PhotoImage(imgResized)
         self.photosTK.append(imgTK)
+
         
 
 class StripEqualLogo(Photostrip):
@@ -87,8 +94,7 @@ class StripEqualLogo(Photostrip):
         strip = Image.new("RGB", self.stripSize, "white")
         positionX = self.stripBorders
         positionY = self.stripBorders # Will increment this to go down
-        for imagePath in self.photoPaths:
-            image = Image.open(imagePath).resize(self.imageSize, Image.ANTIALIAS)
+        for image in self.photos:
             strip.paste(image, (positionX, positionY))
             positionY += self.imageSize[1] + self.stripBorders
 
