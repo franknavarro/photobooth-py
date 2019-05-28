@@ -37,19 +37,12 @@ class Camera(picamera.PiCamera):
         print("Stoping Camera Feed...")
         self.stop_preview()
 
-    def takePic(self):
+    def takePic(self, path):
 
-        # Check the folder path
-        folderPath = ("Pictures", "singles")
-        picPath = os.path.expanduser("~")
-        for folder in folderPath:
-            picPath = os.path.join(picPath, folder) 
-            if not os.path.isdir(picPath):
-                os.makedirs(picPath)	
 
         imgTime = time.strftime("%Y-%m-%d_%H.%M.%S")
-        imgName = "".join(("photobooth_",imgTime,".jpg"))
-        imgPath = os.path.join(picPath, imgName)
+        imgName = "".join(("image_",imgTime,".jpg"))
+        imgPath = os.path.join(path, imgName)
         self.capture(imgPath)
         print("Image Captured and Saved to: ", imgPath)
 

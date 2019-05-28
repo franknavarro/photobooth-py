@@ -25,7 +25,7 @@ class Photostrip():
             os.makedirs(self.imageFolder)
 
         # Create the folder where the photostrips are stored
-        self.stripFolder = os.path.join(self.photoboothFolder, "singles")
+        self.stripFolder = os.path.join(self.photoboothFolder, "strips")
         if not os.path.isdir(self.stripFolder):
             os.makedirs(self.stripFolder)
 
@@ -57,12 +57,12 @@ class StripEqualLogo(Photostrip):
 
         # Define the measurements in inches
         self.stripSizeInches = (2, 6)
-        self.stripBorderInches = 1 / 8
+        self.stripBorderInches = 1 / 16
 
         # Define the measurements in pixels
         stripWidth = self.dpi * self.stripSizeInches[0]
         stripHeight = self.dpi * self.stripSizeInches[1]
-        self.stripSize = (stripWidth, stripHeight)
+        self.stripSize = (int(stripWidth), int(stripHeight))
 
         # Add up how many images are showing up in the strip (including the logo)
         imageports = self.photoCount
@@ -70,7 +70,7 @@ class StripEqualLogo(Photostrip):
             imageports += 1
 
         # Get the amount of space the borders are taking
-        self.stripBorders = self.dpi * self.stripBorderInches
+        self.stripBorders = int(self.dpi * self.stripBorderInches)
         bordersTotalVertical = ( imageports + 1 ) * self.stripBorders
         bordersTotalHorizontal = self.stripBorders * 2
 
@@ -81,3 +81,19 @@ class StripEqualLogo(Photostrip):
 
         print("Image Size: {}w, {}h".format(imageWidth, imageHeight))
         print("Strip Size: {}w, {}h".format(stripWidth, stripHeight))
+
+    def generateStrip(self):
+        print("Generating Photostrip")
+        strip = Image.new("RGB", self.stripSize, "white")
+        positionX = self.stripBorders
+        positionY = self.stripBorders # Will increment this to go down
+        for imagePath in self.photoPaths:
+            image = Image.open(imagePath).resize(self.imageSize, Image.ANTIALIAS)
+            strip.paste(image, (positionX, positionY))
+            positionY += self.imageSize[1] + self.stripBorders
+
+        stripTimeStamp = time.strftime("%Y-%m-%d_%H.%M.%S")
+        stripFilename = "".join(("photostrip_",stripTimeStamp,".jpg"))
+        stripFilePath = os.path.join(self.stripFolder, stripFilename)
+        strip.save(stripFilePath)
+        self.strip = strip

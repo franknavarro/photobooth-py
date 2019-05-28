@@ -6,10 +6,15 @@ class CameraPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
 
+        # Initialize the photostrip
+        self.photostrip = StripEqualLogo()
+        self.photoNumber = 0
+        self.maxPhotos = self.photostrip.photoCount
+
         self.size = controller.get_size()
         print("Screen Size: {}w, {}h".format(self.size[0], self.size[1]))
 
-        cameraResolution = (1280, 720)
+        cameraResolution = self.photostrip.imageSize
         # Get the height of the camera window frame
         camY = 200 # Also defines the padding for the top/bottom
         camH = int(self.size[1] - camY*2)
@@ -46,10 +51,6 @@ class CameraPage(tk.Frame):
         self.camera = Camera(cameraPosition, cameraResolution)
         self.camera.start()
 
-        # Initialize the photostrip
-        self.photostrip = StripEqualLogo()
-        self.photoNumber = 0
-        self.maxPhotos = self.photostrip.photoCount
 
         #Initialize the count down sequence
         self.maxCountDown = 5
@@ -99,6 +100,7 @@ class CameraPage(tk.Frame):
         else:
             self.topText.hideText()
             self.botText.hideText()
+            self.photostrip.generateStrip()
 
 
     # Decrement the count down number by 1
@@ -126,7 +128,7 @@ class CameraPage(tk.Frame):
             self.botText.hideText()
 
         # Take the picture
-        imagePath = self.camera.takePic()
+        imagePath = self.camera.takePic(self.photostrip.imageFolder)
         # Stop the camera
         self.camera.stop()
 
