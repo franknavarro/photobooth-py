@@ -51,14 +51,6 @@ class CameraPage(tk.Frame):
         self.show_frame(CameraFrame)
 
 
-
-
-        # Initialize the count down sequence
-        # self.countdown = CountDown(self)
-
-        # Initialize the Photo Counter
-        # self.picCount = PictureCount(self)
-
     # Function to display a loaded frames in the app
     def show_frame(self, cont):
         frame = self.frames[cont]
@@ -70,6 +62,8 @@ class CameraPage(tk.Frame):
         frame = cont(self.container, self)
         self.frames[cont] = frame
         frame.grid(row=0, column=0, stick="nsew")
+
+
 
 
 # A class to format the bottom and top text of the application
