@@ -34,6 +34,7 @@ class RootWindow(tk.Tk):
 
         # Show the start page to begin with
         self.load_frame(CameraPage)
+        self.show_frame(CameraPage)
 
     
     # Function to display a loaded frames in the app
@@ -47,7 +48,6 @@ class RootWindow(tk.Tk):
         frame = cont(self.container, self)
         self.frames[cont] = frame
         frame.grid(row=0, column=0, stick="nsew")
-        self.show_frame(cont)
 
     def get_size(self):
         self.update_idletasks()
