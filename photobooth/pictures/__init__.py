@@ -52,6 +52,25 @@ class Photostrip():
         imgTK = ImageTk.PhotoImage(imgResized)
         self.photosTK.append(imgTK)
 
+    # Resizes the TK images of the photostrip depedning on the size specified
+    def resizeScreenIMGs(self, **kwargs ):
+        # If width is specified then update to relative height
+        if 'width' in kwargs:
+            newWidth = kwargs.get('width')
+            newHeight = int(newWidth * self.stripSize[1] / self.stripSize[0])
+        # If height is specified then update to relative width
+        elif 'height' in kwargs:
+            newHeight = kwargs.get('height')
+            newWidth = int(newHeight * self.stripSize[0] / self.stripSize[1])
+        # If no height nor width was given then update to default size
+        else:
+            newWidth = self.stripSize[0]
+            newHeight = self.stripSize[1]
+
+        self.stripTK = ImageTk.PhotoImage(self.strip.resize((newWidth, newHeight), Image.ANTIALIAS))
+        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStrip.resize((newWidth, newHeight), Image.ANTIALIAS))
+
+
         
 
 class StripEqualLogo(Photostrip):
@@ -65,6 +84,12 @@ class StripEqualLogo(Photostrip):
         # Define the measurements in inches
         self.stripSizeInches = (2, 6)
         self.stripBorderInches = 1 / 16
+
+        # Define the print image size
+        self.printSizeInches = (4, 6)
+        printSizeWidth = self.dpi * self.printSizeInches[0]
+        printSizeHeight = self.dpi * self.printSizeInches[1]
+        self.printSize = (int(printSizeWidth), int(printSizeHeight))
 
         # Define the measurements in pixels
         stripWidth = self.dpi * self.stripSizeInches[0]
@@ -99,7 +124,14 @@ class StripEqualLogo(Photostrip):
             positionY += self.imageSize[1] + self.stripBorders
 
         stripTimeStamp = time.strftime("%Y-%m-%d_%H.%M.%S")
-        stripFilename = "".join(("photostrip_",stripTimeStamp,".jpg"))
+        stripFilename = "".join(("colored_",stripTimeStamp,".jpg"))
         stripFilePath = os.path.join(self.stripFolder, stripFilename)
         strip.save(stripFilePath)
+
         self.strip = strip
+        self.grayscaleStrip = strip.convert('LA')
+
+        self.
+        self.stripTK = ImageTk.PhotoImage(strip)
+        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStrip)
+

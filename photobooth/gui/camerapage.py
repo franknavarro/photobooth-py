@@ -9,26 +9,25 @@ class CameraPage(tk.Frame):
         # Initialize the photostrip
         self.photostrip = StripEqualLogo()
 
+        # Calculate sizes for our various frames
         self.size = controller.get_size()
+
+        self.textWidth = self.size[0]
+        self.textHeight = 200
+        self.textSize = (self.textWidth, self.textHeight)
+
+        self.containerWidth = self.size[0]
+        self.containerHeight = int(self.size[1] - self.textHeight*2)
+        self.containerSize = (self.containerWidth, self.containerHeight)
+
         print("Screen Size: {}w, {}h".format(self.size[0], self.size[1]))
 
-        self.cameraResolution = self.photostrip.imageSize
-        # Get the height of the camera window frame
-        camY = 200 # Also defines the padding for the top/bottom
-        camH = int(self.size[1] - camY*2)
-
-        # Get the width of the camera window frame
-        camW = int(camH * self.cameraResolution[0] / self.cameraResolution[1])
-        camX = int((self.size[0] - camW) / 2) #Also defines the padding for the left/right
-        self.cameraPosition = (camX, camY, camW, camH)
-
-        print("Camera Size: {}x, {}y, {}w, {}h".format(camX, camY, camW, camH))
 
         # Initialize the grid
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1, minsize=camY)
-        self.grid_rowconfigure(1, weight=1, minsize=camH)
-        self.grid_rowconfigure(2, weight=1, minsize=camY)
+        self.grid_rowconfigure(0, weight=1, minsize=self.textHeight)
+        self.grid_rowconfigure(1, weight=1, minsize=self.containerHeight)
+        self.grid_rowconfigure(2, weight=1, minsize=self.textHeight)
 
 
         # Initialize the text above the camera
@@ -65,7 +64,6 @@ class CameraPage(tk.Frame):
 
 
 
-
 # A class to format the bottom and top text of the application
 class LabelText(tk.Frame):
     def __init__(self, parent, initText):
@@ -92,10 +90,26 @@ class CameraFrame(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
 
+        self.controller = controller
+
+        # Inherit sizing from controller
+        self.cameraResolution = controller.photostrip.imageSize
+        self.size = controller.containerSize
+
+        # Get the height of the camera window frame
+        camY = controller.textWidth # Also defines the padding for the top/bottom
+        camH = self.size[1]
+
+        # Get the width of the camera window frame
+        camW = int(camH * self.cameraResolution[0] / self.cameraResolution[1])
+        camX = int((self.size[0] - camW) / 2) #Also defines the padding for the left/right
+
+        # Coordinates for camera on the screen
+        self.cameraPosition = (camX, camY, camW, camH) # [X, Y, Width, Height]
+        print("Camera Size: {}x, {}y, {}w, {}h".format(camX, camY, camW, camH))
+
         # Get the relative camera position values from the parent
-        self.cameraPosition = controller.cameraPosition # [X, Y, Width, Height]
-        self.cameraResolution = controller.cameraResolution
-        self.cameraViewSize = (self.cameraPosition[2], self.cameraPosition[3])
+        self.cameraViewSize = (camW, camH)
 
         # Start the camera service
         self.camera = Camera(self.cameraPosition, self.cameraResolution)
@@ -108,7 +122,7 @@ class CameraFrame(tk.Frame):
 
 
         #Initialize the count down sequence
-        self.maxCountDown = 2
+        self.maxCountDown = 1
 
         # Keep references here of the the top and bottom text of the parent for future use
         self.topText = controller.topText
@@ -181,7 +195,8 @@ class CameraFrame(tk.Frame):
         else:
             self.topText.hideText()
             self.botText.hideText()
-            self.photostrip.generateStrip()
+            self.controller.load_frame(PrintingPage)
+            self.controller.show_frame(PrintingPage)
 
 
     # Decrement the count down number by 1
@@ -221,3 +236,41 @@ class CameraFrame(tk.Frame):
 
         # Take next photo
         self.after(2000, self.readyUpPictures)
+
+
+class PrintingPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg=parent["bg"])
+
+        # Get the relative window size
+        self.size = controller.containerSize
+        columnWidths = self.size[0] / 3
+
+        # Set up the grid sizing
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1, minsize=columnWidths)
+        self.grid_columnconfigure(1, weight=1, minsize=columnWidths)
+        self.grid_columnconfigure(2, weight=1, minsize=columnWidths)
+
+        # Keep references here of the the top and bottom text of the parent for future use
+        self.topText = controller.topText
+        self.botText = controller.botText
+
+        # Get the photostrip instance
+        self.photostrip = controller.photostrip
+        self.photostrip.generateStrip()
+        self.photostrip.resizeScreenIMGs( height=self.size[1] )
+
+        # Size the grid
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        # The Colored Photostrip to display
+        self.coloredImage = tk.Label(self, image=self.photostrip.stripTK, bg=self["bg"])
+        self.coloredImage.grid(row=0, column=0, sticky="nsew")
+
+        # The Grayscale Image
+        self.grayscaleImage = tk.Label(self, image=self.photostrip.grayscaleStripTK, bg=self["bg"])
+        self.grayscaleImage.grid(row=0, column=1, sticky="nsew")
+
+
