@@ -244,10 +244,13 @@ class PrintingPage(tk.Frame):
 
         # Get the relative window size
         self.size = controller.containerSize
-        columnWidths = self.size[0] / 3
+        gridPad = 10
+        columnWidths = int((self.size[0] / 3) - (gridPad * 2))
+        textHeight = 100
 
         # Set up the grid sizing
         self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1, minsize=columnWidths)
         self.grid_columnconfigure(1, weight=1, minsize=columnWidths)
         self.grid_columnconfigure(2, weight=1, minsize=columnWidths)
@@ -259,7 +262,9 @@ class PrintingPage(tk.Frame):
         # Get the photostrip instance
         self.photostrip = controller.photostrip
         self.photostrip.generateStrip()
-        self.photostrip.resizeScreenIMGs( height=self.size[1] )
+
+        stripContainerHeight = self.size[1] - gridPad * 2 - textHeight
+        self.photostrip.resizeScreenIMGs( height=stripContainerHeight )
 
         # Size the grid
         self.grid_rowconfigure(0, weight=1)
@@ -267,10 +272,20 @@ class PrintingPage(tk.Frame):
 
         # The Colored Photostrip to display
         self.coloredImage = tk.Label(self, image=self.photostrip.stripTK, bg=self["bg"])
-        self.coloredImage.grid(row=0, column=0, sticky="nsew")
+        self.coloredImage.grid(row=0, column=0, sticky="nsew", padx=gridPad, pady=gridPad)
+        self.coloredText = tk.Label(self, text="Color", bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
+        self.coloredText.grid(row=1, column=0, stick="nsew", padx=gridPad, pady=gridPad)
 
         # The Grayscale Image
         self.grayscaleImage = tk.Label(self, image=self.photostrip.grayscaleStripTK, bg=self["bg"])
-        self.grayscaleImage.grid(row=0, column=1, sticky="nsew")
+        self.grayscaleImage.grid(row=0, column=1, sticky="nsew", padx=gridPad, pady=gridPad)
+        self.grayscaleText = tk.Label(self, text="Black & White", bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
+        self.grayscaleText.grid(row=1, column=1, stick="nsew", padx=gridPad, pady=gridPad)
+
+        # The Both Grayscale and Colored Image
+        self.bothImage = tk.Label(self, image=self.photostrip.bothTK, bg=self["bg"])
+        self.bothImage.grid(row=0, column=2, sticky="nsew", padx=gridPad, pady=gridPad)
+        self.bothText = tk.Label(self, text="Both", bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
+        self.bothText.grid(row=1, column=2, stick="nsew", padx=gridPad, pady=gridPad)
 
 

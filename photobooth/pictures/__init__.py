@@ -57,18 +57,19 @@ class Photostrip():
         # If width is specified then update to relative height
         if 'width' in kwargs:
             newWidth = kwargs.get('width')
-            newHeight = int(newWidth * self.stripSize[1] / self.stripSize[0])
+            newHeight = int(newWidth * self.printSize[1] / self.printSize[0])
         # If height is specified then update to relative width
         elif 'height' in kwargs:
             newHeight = kwargs.get('height')
-            newWidth = int(newHeight * self.stripSize[0] / self.stripSize[1])
+            newWidth = int(newHeight * self.printSize[0] / self.printSize[1])
         # If no height nor width was given then update to default size
         else:
-            newWidth = self.stripSize[0]
-            newHeight = self.stripSize[1]
+            newWidth = self.printSize[0]
+            newHeight = self.printSize[1]
 
-        self.stripTK = ImageTk.PhotoImage(self.strip.resize((newWidth, newHeight), Image.ANTIALIAS))
-        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStrip.resize((newWidth, newHeight), Image.ANTIALIAS))
+        self.stripTK = ImageTk.PhotoImage(self.stripPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
+        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStripPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
+        self.bothTK = ImageTk.PhotoImage(self.bothPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
 
 
         
@@ -131,7 +132,17 @@ class StripEqualLogo(Photostrip):
         self.strip = strip
         self.grayscaleStrip = strip.convert('LA')
 
-        self.
-        self.stripTK = ImageTk.PhotoImage(strip)
-        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStrip)
+        self.stripPrint = Image.new("RGB", self.printSize, "white")
+        self.stripPrint.paste(self.strip, (0, 0))
+        self.stripPrint.paste(self.strip, (self.stripSize[0], 0))
+        self.stripTK = ImageTk.PhotoImage(self.stripPrint)
+
+        self.grayscaleStripPrint = self.stripPrint.convert('LA')
+        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStripPrint)
+
+        self.bothPrint = Image.new("RGB", self.printSize, "white")
+        self.bothPrint.paste(self.strip, (0, 0))
+        self.bothPrint.paste(self.grayscaleStrip, (self.stripSize[0], 0))
+        self.bothTK = ImageTk.PhotoImage(self.bothPrint)
+
 
