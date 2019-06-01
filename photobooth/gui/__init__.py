@@ -1,8 +1,7 @@
 import tkinter as tk
 import sys
 
-from .startpage import StartPage
-from .camerapage import CameraPage
+from .mainapplication import MainApplication
 
 class RootWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -33,8 +32,8 @@ class RootWindow(tk.Tk):
         self.frames = {}
 
         # Show the start page to begin with
-        self.load_frame(CameraPage)
-        self.show_frame(CameraPage)
+        self.load_frame(MainApplication)
+        self.show_frame(MainApplication)
 
     
     # Function to display a loaded frames in the app

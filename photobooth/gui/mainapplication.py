@@ -2,7 +2,7 @@ import tkinter as tk
 from photobooth.camera import Camera
 from photobooth.pictures import StripEqualLogo
 
-class CameraPage(tk.Frame):
+class MainApplication(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
 
