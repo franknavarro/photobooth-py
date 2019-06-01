@@ -105,14 +105,16 @@ class CameraFrame(tk.Frame):
         camX = int((self.size[0] - camW) / 2) #Also defines the padding for the left/right
 
         # Coordinates for camera on the screen
+        cameraPadding = 10
         self.cameraPosition = (camX, camY, camW, camH) # [X, Y, Width, Height]
+        self.cameraCoordinates = (camX + cameraPadding, camY + cameraPadding, camW - cameraPadding*2, camH - cameraPadding*2)
         print("Camera Size: {}x, {}y, {}w, {}h".format(camX, camY, camW, camH))
 
         # Get the relative camera position values from the parent
-        self.cameraViewSize = (camW, camH)
+        self.cameraViewSize = (self.cameraCoordinates[2], self.cameraCoordinates[3])
 
         # Start the camera service
-        self.camera = Camera(self.cameraPosition, self.cameraResolution)
+        self.camera = Camera(self.cameraCoordinates, self.cameraResolution)
         self.camera.start()
 
         # Get our photostrip instance
@@ -139,7 +141,7 @@ class CameraFrame(tk.Frame):
         self.cameraPad1.grid(row=0, column=0, sticky="nsew")
 
         # A Label where the camera will sit over and where pictures will be displayed
-        self.picture = tk.Label(self, width=self.cameraPosition[2], height=self.cameraPosition[3], bg=self["bg"])
+        self.picture = tk.Label(self, width=self.cameraPosition[2], height=self.cameraPosition[3], bg="#F8F8FF")
         self.picture.grid(row=0, column=1, sticky="nsew")
 
         # Padding to the right of the camera
@@ -398,20 +400,27 @@ class CountDownBar(tk.Canvas):
 
 
     def start(self):
+        # Get the size of the count down line
         self.update()
         self.width = self.winfo_width()
+        # Create a rectangle that spans the width of the canvas
         self.bar = self.create_rectangle(0, 0, self.width, self.height, fill=self.color, outline="")
+        # Just incase reset the background color
         self.configure(bg=self.backColor)
+        # Calculate the amount we need to adjust the width with every update call
         self.updateSize = self.updateTime * self.width / self.time
+        # Start counting down
         self.after(self.updateTime, self.updateBar)
     
     def updateBar(self):
+        # As long as we have more time decrement the bars length
         if self.time >= 0:
             self.width -= self.updateSize
             self.time -= self.updateTime
             self.coords(self.bar, (0, 0, self.width, self.height))
             self.update()
             self.after(self.updateTime, self.updateBar)
+
+        # Once time is out reset out time variable
         else:
-            self.time = self.maxTime
-            self.width = self.maxWidth
+            self.time = self.maxSeconds
