@@ -22,7 +22,7 @@ class RootWindow(tk.Tk):
         self.bind('<Escape>', self.close)
 
         # Create container to hold all frames
-        self.container = tk.Frame(self, bg="#a3c9de")
+        self.container = tk.Frame(self, bg="#F2AFB0")
         self.container.pack(side="top", fill="both", expand=True)
 
         # Center container in window
