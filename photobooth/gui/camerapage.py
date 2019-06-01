@@ -247,14 +247,16 @@ class PrintingPage(tk.Frame):
         self.size = controller.containerSize
 
         # Get the container sizes
-        columnWidths = int( self.size[0] / 3 )
-        self.padding = 20
+        self.padding = 50
         textHeight = 100
+        countHeight = 25
+        stripContainerHeight = self.size[1] - self.padding * 2 - textHeight - countHeight
+        columnWidths = int( self.size[0] / 3 )
 
 
         # Set up the grid sizing
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        # self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1, minsize=columnWidths)
         self.grid_columnconfigure(1, weight=1, minsize=columnWidths)
         self.grid_columnconfigure(2, weight=1, minsize=columnWidths)
@@ -271,7 +273,6 @@ class PrintingPage(tk.Frame):
         self.photostrip = controller.photostrip
         self.photostrip.generateStrip()
 
-        stripContainerHeight = self.size[1] - self.padding * 2 - textHeight
         self.photostrip.resizeScreenIMGs( height=stripContainerHeight )
 
         # Size the grid
@@ -281,25 +282,44 @@ class PrintingPage(tk.Frame):
         self.middleColumn = columnWidths / 2
 
         # The Colored Photostrip to display
-        self.coloredImage = ImageSelector(self, self.size,self.photostrip, option='color', selected=True)
-        self.coloredImage.grid(row=0, column=0, stick="nsew") 
-
+        self.coloredImage = ImageSelector(self, self.photostrip, option='color', selected=True)
+        self.coloredImage.grid(row=0, column=0, sticky="nsew") 
 
         # The Grayscale Image
-        self.grayscaleImage = ImageSelector(self, self.size, self.photostrip, option='grayscale')
-        self.grayscaleImage.grid(row=0, column=1, stick="nsew") 
+        self.grayscaleImage = ImageSelector(self, self.photostrip, option='grayscale')
+        self.grayscaleImage.grid(row=0, column=1, sticky="nsew") 
 
         # The Both Grayscale and Colored Image
-        self.bothImage = ImageSelector(self, self.size, self.photostrip, option='both')
-        self.bothImage.grid(row=0, column=2, stick="nsew") 
+        self.bothImage = ImageSelector(self, self.photostrip, option='both')
+        self.bothImage.grid(row=0, column=2, sticky="nsew") 
+
+        # Create a count down bar
+        self.countDown = CountDownBar(self, maxTime=10, height=countHeight)
+        self.countDown.grid(row=1, column=0, columnspan=3, sticky="nsew")
+        self.countDown.start()
+
+        # Bind space bar to toggle the next option
+        self.bind('<space>', self.toggleNext)
+
+    # Depending on the currently selected select the next one
+    def toggleNext(self, event):
+        if self.coloredImage.selected:
+            self.coloredImage.toggleSelected()
+            self.grayscaleImage.toggleSelected()
+
+        elif self.grayscaleImage.selected:
+            self.grayscaleImage.toggleSelected()
+            self.bothImage.toggleSelected()
+
+        elif self.bothImage.selected:
+            self.bothImage.toggleSelected()
+            self.coloredImage.toggleSelected()
+
 
 
 class ImageSelector(tk.Frame):
-    def __init__ (self, parent, size, photostrip, **kwargs):
-        tk.Frame.__init__(self, parent, width=size[0], height=size[1], bg=parent["bg"])
-
-        # Get the padding
-        gridPad = parent.padding
+    def __init__ (self, parent, photostrip, **kwargs):
+        tk.Frame.__init__(self, parent, bg=parent["bg"])
 
         if 'selected' in kwargs:
             self.selected = kwargs.get('selected')
@@ -330,9 +350,68 @@ class ImageSelector(tk.Frame):
 
         # Create the image
         self.image = tk.Label(self, image=pic, bg=self["bg"])
-        self.image.grid(row=0, column=0, sticky="nsew", padx=gridPad, pady=gridPad)
+        self.image.grid(row=0, column=0, sticky="nsew") 
 
         # Create the text
         self.text = tk.Label(self, text=text, bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
-        self.text.grid(row=1, column=0, sticky="nsew", padx=gridPad, pady=gridPad)
+        self.text.grid(row=1, column=0, sticky="nsew")
 
+        self.highlightColor = "#AFF2F1"
+        if self.selected:
+            self.text.configure( bg=self.highlightColor )
+
+    def toggleSelected(self):
+        self.selected = not self.selected
+
+        # Change background color
+        if self.selected:
+            self.text.configure(bg=self.highlightColor)
+        else:
+            self.text.configure(bg=self["bg"])
+
+        # Update the screen 
+        self.update()
+
+class CountDownBar(tk.Canvas):
+    def __init__ (self, parent, **kwargs):
+        self.color = "#AFF2F1" # bar color
+        self.backColor = parent["bg"] # Save for later
+        # Start as background as the bar color so that the bar looks filled to start
+        tk.Canvas.__init__(self, parent, bg=self.backColor, bd=0, highlightthickness=0, relief='flat')
+
+        # Check if the height is defined
+        if 'height' in kwargs:
+            self.height = kwargs.get('height')
+        else:
+            self.height = 10
+
+        self.configure(height=self.height)
+
+        # Check if the max time is defined
+        if 'maxTime' in kwargs:
+            self.maxSeconds = kwargs.get('maxTime')
+        else:
+            self.maxSeconds = 5
+
+        self.time = int(self.maxSeconds * 1000)
+        self.updateTime = 25
+
+
+    def start(self):
+        self.update()
+        self.width = self.winfo_width()
+        self.bar = self.create_rectangle(0, 0, self.width, self.height, fill=self.color)
+        self.configure(bg=self.backColor)
+        self.updateSize = self.updateTime * self.width / self.time
+        self.after(self.updateTime, self.updateBar)
+    
+    def updateBar(self):
+        if self.time >= 0:
+            self.width -= self.updateSize
+            self.time -= self.updateTime
+            self.coords(self.bar, (0, 0, self.width, self.height))
+            self.update()
+            self.after(self.updateTime, self.updateBar)
+        else:
+            self.time = self.maxTime
+            self.width = self.maxWidth
