@@ -184,7 +184,7 @@ class CameraFrame(tk.Frame):
             # Start the camera only if this isn't the first photo
             # Because that would mean that the camera is already running
             if self.photoNumber != 1:
-                # self.camera.start()
+                self.camera.start()
                 print("Restart Camera")
 
 
@@ -227,7 +227,7 @@ class CameraFrame(tk.Frame):
         # Take the picture
         imagePath = self.camera.takePic(self.photostrip.imageFolder)
         # Stop the camera
-        # self.camera.stop()
+        self.camera.stop()
 
         # Add the image to our photostrip
         self.photostrip.addPhoto(imagePath, self.cameraViewSize)
@@ -245,9 +245,12 @@ class PrintingPage(tk.Frame):
 
         # Get the relative window size
         self.size = controller.containerSize
-        gridPad = 10
-        columnWidths = int((self.size[0] / 3) - (gridPad * 2))
+
+        # Get the container sizes
+        columnWidths = int( self.size[0] / 3 )
+        self.padding = 20
         textHeight = 100
+
 
         # Set up the grid sizing
         self.grid_rowconfigure(0, weight=1)
@@ -260,33 +263,76 @@ class PrintingPage(tk.Frame):
         self.topText = controller.topText
         self.botText = controller.botText
 
+        # Update the text
+        self.topText.updateText("Select print color")
+        self.botText.updateText("Push button to change")
+
         # Get the photostrip instance
         self.photostrip = controller.photostrip
         self.photostrip.generateStrip()
 
-        stripContainerHeight = self.size[1] - gridPad * 2 - textHeight
+        stripContainerHeight = self.size[1] - self.padding * 2 - textHeight
         self.photostrip.resizeScreenIMGs( height=stripContainerHeight )
 
         # Size the grid
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+        self.middleColumn = columnWidths / 2
+
         # The Colored Photostrip to display
-        self.coloredImage = tk.Label(self, image=self.photostrip.stripTK, bg=self["bg"])
-        self.coloredImage.grid(row=0, column=0, sticky="nsew", padx=gridPad, pady=gridPad)
-        self.coloredText = tk.Label(self, text="Color", bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
-        self.coloredText.grid(row=1, column=0, stick="nsew", padx=gridPad, pady=gridPad)
+        self.coloredImage = ImageSelector(self, self.size,self.photostrip, option='color', selected=True)
+        self.coloredImage.grid(row=0, column=0, stick="nsew") 
+
 
         # The Grayscale Image
-        self.grayscaleImage = tk.Label(self, image=self.photostrip.grayscaleStripTK, bg=self["bg"])
-        self.grayscaleImage.grid(row=0, column=1, sticky="nsew", padx=gridPad, pady=gridPad)
-        self.grayscaleText = tk.Label(self, text="Black & White", bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
-        self.grayscaleText.grid(row=1, column=1, stick="nsew", padx=gridPad, pady=gridPad)
+        self.grayscaleImage = ImageSelector(self, self.size, self.photostrip, option='grayscale')
+        self.grayscaleImage.grid(row=0, column=1, stick="nsew") 
 
         # The Both Grayscale and Colored Image
-        self.bothImage = tk.Label(self, image=self.photostrip.bothTK, bg=self["bg"])
-        self.bothImage.grid(row=0, column=2, sticky="nsew", padx=gridPad, pady=gridPad)
-        self.bothText = tk.Label(self, text="Both", bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
-        self.bothText.grid(row=1, column=2, stick="nsew", padx=gridPad, pady=gridPad)
+        self.bothImage = ImageSelector(self, self.size, self.photostrip, option='both')
+        self.bothImage.grid(row=0, column=2, stick="nsew") 
 
+
+class ImageSelector(tk.Frame):
+    def __init__ (self, parent, size, photostrip, **kwargs):
+        tk.Frame.__init__(self, parent, width=size[0], height=size[1], bg=parent["bg"])
+
+        # Get the padding
+        gridPad = parent.padding
+
+        if 'selected' in kwargs:
+            self.selected = kwargs.get('selected')
+        else:
+            self.selected = False
+
+        # Get the option passed in if there was one
+        if 'option' in kwargs:
+            option = kwargs.get('option')
+        else:
+            option = 'color'
+
+        # Get preset depending on the option
+        if option == "grayscale":
+            text = "Black & White"
+            pic = photostrip.grayscaleStripTK
+        elif option == "both":
+            text = "Both"
+            pic = photostrip.bothTK
+        else:
+            text = "Color"
+            pic = photostrip.stripTK
+
+        # Size the grid
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+
+        # Create the image
+        self.image = tk.Label(self, image=pic, bg=self["bg"])
+        self.image.grid(row=0, column=0, sticky="nsew", padx=gridPad, pady=gridPad)
+
+        # Create the text
+        self.text = tk.Label(self, text=text, bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
+        self.text.grid(row=1, column=0, sticky="nsew", padx=gridPad, pady=gridPad)
 

@@ -67,6 +67,7 @@ class Photostrip():
             newWidth = self.printSize[0]
             newHeight = self.printSize[1]
 
+
         self.stripTK = ImageTk.PhotoImage(self.stripPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
         self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStripPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
         self.bothTK = ImageTk.PhotoImage(self.bothPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
