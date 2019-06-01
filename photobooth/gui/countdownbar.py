@@ -21,9 +21,15 @@ class CountDownBar(tk.Canvas):
         else:
             self.maxSeconds = 5
 
+        # Check if a call back function is defined
+        if 'callback' in kwargs:
+            self.callback = kwargs.get('callback')
+        else:
+            self.callback = None
+
         # Calculate the time
         self.time = int(self.maxSeconds * 1000)
-        self.updateTime = 5
+        self.updateTime = 10
 
         # Create the bar we will be updating
         self.bar = self.create_rectangle(0, 0, 0, 0, fill=self.color, outline="")
@@ -53,3 +59,5 @@ class CountDownBar(tk.Canvas):
         # Once time is out reset out time variable
         else:
             self.time = int(self.maxSeconds * 1000)
+            if self.callback:
+                self.callback()

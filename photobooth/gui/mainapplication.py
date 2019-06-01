@@ -3,7 +3,6 @@ import tkinter as tk
 from photobooth.pictures import StripEqualLogo
 
 from .camerapage import CameraPage
-from .printpage import PrintPage
 from .labeltext import LabelText
 
 class MainApplication(tk.Frame):
@@ -67,4 +66,6 @@ class MainApplication(tk.Frame):
         frame.grid(row=0, column=0, stick="nsew")
 
 
-
+    def reset_camera(self):
+        self.topText.updateText("PHOTOBOOTH")
+        self.botText.updateText("PUSH BUTTON TO START")

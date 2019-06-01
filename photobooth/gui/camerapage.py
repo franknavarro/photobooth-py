@@ -2,7 +2,7 @@ import tkinter as tk
 
 from photobooth.camera import Camera
 from .countdownbar import CountDownBar
-from .printpage import PrintPage
+from .printselector import PrintSelector
 
 # A place holder for where the camera sits and where the cameras taken photos will be displayed
 class CameraPage(tk.Frame):
@@ -129,8 +129,8 @@ class CameraPage(tk.Frame):
             # Start counting down 
             self.after(1000, self.updateCountDown)
         else:
-            self.controller.load_frame(PrintPage)
-            self.controller.show_frame(PrintPage)
+            self.controller.load_frame(PrintSelector)
+            self.controller.show_frame(PrintSelector)
 
 
     # Decrement the count down number by 1
