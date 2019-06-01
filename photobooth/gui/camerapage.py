@@ -97,7 +97,7 @@ class CameraFrame(tk.Frame):
         self.size = controller.containerSize
 
         # Get the height of the camera window frame
-        camY = controller.textWidth # Also defines the padding for the top/bottom
+        camY = controller.textHeight # Also defines the padding for the top/bottom
         camH = self.size[1]
 
         # Get the width of the camera window frame
@@ -183,8 +183,9 @@ class CameraFrame(tk.Frame):
 
             # Start the camera only if this isn't the first photo
             # Because that would mean that the camera is already running
-            if self.photoNumber != 0:
-                self.camera.start()
+            if self.photoNumber != 1:
+                # self.camera.start()
+                print("Restart Camera")
 
 
             # Display which photo number this is 
@@ -226,7 +227,7 @@ class CameraFrame(tk.Frame):
         # Take the picture
         imagePath = self.camera.takePic(self.photostrip.imageFolder)
         # Stop the camera
-        self.camera.stop()
+        # self.camera.stop()
 
         # Add the image to our photostrip
         self.photostrip.addPhoto(imagePath, self.cameraViewSize)
