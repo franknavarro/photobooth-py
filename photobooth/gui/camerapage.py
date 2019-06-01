@@ -394,13 +394,13 @@ class CountDownBar(tk.Canvas):
             self.maxSeconds = 5
 
         self.time = int(self.maxSeconds * 1000)
-        self.updateTime = 25
+        self.updateTime = 5
 
 
     def start(self):
         self.update()
         self.width = self.winfo_width()
-        self.bar = self.create_rectangle(0, 0, self.width, self.height, fill=self.color)
+        self.bar = self.create_rectangle(0, 0, self.width, self.height, fill=self.color, outline="")
         self.configure(bg=self.backColor)
         self.updateSize = self.updateTime * self.width / self.time
         self.after(self.updateTime, self.updateBar)
