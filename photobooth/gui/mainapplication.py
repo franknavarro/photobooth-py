@@ -11,6 +11,7 @@ class MainApplication(tk.Frame):
 
         # Initialize the photostrip
         self.photostrip = StripEqualLogo()
+        self.printImage = ""
 
         # Calculate sizes for our various frames
         self.size = controller.get_size()
@@ -66,6 +67,7 @@ class MainApplication(tk.Frame):
         frame.grid(row=0, column=0, stick="nsew")
 
 
-    def reset_camera(self):
+    def resetCameraPage(self):
         self.topText.updateText("PHOTOBOOTH")
         self.botText.updateText("PUSH BUTTON TO START")
+        self.load_showFrame(CameraPage)

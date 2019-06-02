@@ -9,6 +9,12 @@ class Photostrip():
         self.photosTK = []
         self.photos = []
 
+        self.printPaths = {
+            "color": "",
+            "grayscale": "",
+            "both": ""
+        }
+
         # Set the folder for the user where we will store all our content
         folderPathList = ("Pictures", "Photobooth")
         # Get the users home directory
@@ -29,6 +35,10 @@ class Photostrip():
         self.stripFolder = os.path.join(self.photoboothFolder, "strips")
         if not os.path.isdir(self.stripFolder):
             os.makedirs(self.stripFolder)
+
+        self.printFolder = os.path.join(self.photoboothFolder, "print")
+        if not os.path.isdir(self.printFolder):
+            os.makedirs(self.printFolder)
 
         print("Image Folder: ",self.imageFolder)
         print("Image Folder: ",self.stripFolder)
@@ -73,6 +83,20 @@ class Photostrip():
         self.bothTK = ImageTk.PhotoImage(self.bothPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
 
 
+    def getPrintFile(self, key):
+        return self.printPaths[key]
+
+    def deleteUnSelected(self, selected):
+        if selected == 'color':
+            remove = ['grayscale', 'both']
+        elif selected == 'grayscale':
+            remove = ['color', 'both']
+        elif selected == 'both':
+            remove = ['color', 'grayscale']
+
+        for picType in remove:
+            os.remove(self.printPaths[picType])
+            self.printPaths[picType] = ""
         
 
 class StripEqualLogo(Photostrip):
@@ -85,7 +109,7 @@ class StripEqualLogo(Photostrip):
 
         # Define the measurements in inches
         self.stripSizeInches = (2, 6)
-        self.stripBorderInches = 1 / 16
+        self.stripBorderInches = 1 / 8
 
         # Define the print image size
         self.printSizeInches = (4, 6)
@@ -131,19 +155,30 @@ class StripEqualLogo(Photostrip):
         strip.save(stripFilePath)
 
         self.strip = strip
-        self.grayscaleStrip = strip.convert('LA')
+        self.grayscaleStrip = strip.convert('L')
 
         self.stripPrint = Image.new("RGB", self.printSize, "white")
         self.stripPrint.paste(self.strip, (0, 0))
         self.stripPrint.paste(self.strip, (self.stripSize[0], 0))
         self.stripTK = ImageTk.PhotoImage(self.stripPrint)
+        colorFileName = "".join(("colored_",stripTimeStamp,".jpg"))
+        colorFilePath = os.path.join(self.printFolder, colorFileName)
+        self.stripPrint.save(colorFilePath)
 
-        self.grayscaleStripPrint = self.stripPrint.convert('LA')
+        self.grayscaleStripPrint = self.stripPrint.convert('L')
         self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStripPrint)
+        grayFileName = "".join(("grayscale_",stripTimeStamp,".jpg"))
+        grayFilePath = os.path.join(self.printFolder, grayFileName)
+        self.grayscaleStripPrint.save(grayFilePath)
 
         self.bothPrint = Image.new("RGB", self.printSize, "white")
         self.bothPrint.paste(self.strip, (0, 0))
         self.bothPrint.paste(self.grayscaleStrip, (self.stripSize[0], 0))
         self.bothTK = ImageTk.PhotoImage(self.bothPrint)
+        bothFileName = "".join(("both_",stripTimeStamp,".jpg"))
+        bothFilePath = os.path.join(self.printFolder, bothFileName)
+        self.bothPrint.save(bothFilePath)
+
+        self.printPaths.update({"color":colorFilePath, "grayscale":grayFilePath, "both":bothFilePath})
 
 

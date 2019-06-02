@@ -83,12 +83,22 @@ class PrintSelector(tk.Frame):
             self.coloredImage.toggleSelected()
 
     def startPrint(self):
-        self.topText.hideText()
-        self.botText.hideText()
         self.grid_forget()
         self.destroy()
+        self.controller.printImage = self.getSelectedImage()
         self.controller.load_frame(PrintPage)
         self.controller.show_frame(PrintPage)
+
+    def getSelectedImage(self):
+        if self.coloredImage.selected:
+            selected = "color"
+        elif self.grayscaleImage.selected:
+            selected = "grayscale"
+        elif self.bothImage.selected:
+            selected = "both"
+
+        self.photostrip.deleteUnSelected(selected)
+        return self.photostrip.getPrintFile(selected)
 
 
 
