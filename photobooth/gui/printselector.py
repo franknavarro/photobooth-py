@@ -16,7 +16,7 @@ class PrintSelector(tk.Frame):
         self.padding = 50
         textHeight = 100
         countHeight = 25
-        stripContainerHeight = self.size[1] - self.padding * 2 - textHeight - countHeight
+        self.stripContainerHeight = self.size[1] - self.padding * 2 - textHeight - countHeight
         columnWidths = int( self.size[0] / 3 )
 
 
@@ -31,15 +31,9 @@ class PrintSelector(tk.Frame):
         self.topText = controller.topText
         self.botText = controller.botText
 
-        # Update the text
-        self.topText.updateText("Select print color")
-        self.botText.updateText("Push button to change")
 
         # Get the photostrip instance
         self.photostrip = controller.photostrip
-        self.photostrip.generateStrip()
-
-        self.photostrip.resizeScreenIMGs( height=stripContainerHeight )
 
         # Size the grid
         self.grid_rowconfigure(0, weight=1)
@@ -63,10 +57,26 @@ class PrintSelector(tk.Frame):
         self.countTime = 10
         self.countDown = CountDownBar(self, maxTime=self.countTime, height=countHeight, callback=self.startPrint)
         self.countDown.grid(row=1, column=0, columnspan=3, sticky="nsew")
-        self.countDown.start()
 
+    def initializePage(self):
+        # Update the text
+        self.topText.updateText("Select print color")
+        self.botText.updateText("Push button to change")
+        # Generate new photostrips
+        self.photostrip.generateStrip()
+        self.photostrip.resizeScreenIMGs( height=self.stripContainerHeight )
+        # Update the display images with any new values
+        self.coloredImage.updatePicture()
+        self.grayscaleImage.updatePicture()
+        self.bothImage.updatePicture()
+        # Set the toggled values
+        self.coloredImage.toggleOn()
+        self.grayscaleImage.untoggle()
+        self.bothImage.untoggle()
+        # start the count down
+        self.countDown.start()
         # Bind space bar to toggle the next option
-        self.bind('<space>', self.toggleNext)
+        self.bindID = self.bind('<space>', self.toggleNext)
 
     # Depending on the currently selected select the next one
     def toggleNext(self, event):
@@ -83,10 +93,8 @@ class PrintSelector(tk.Frame):
             self.coloredImage.toggleSelected()
 
     def startPrint(self):
-        self.grid_forget()
-        self.destroy()
+        self.unbind('<space>', self.bindID)
         self.controller.printImage = self.getSelectedImage()
-        self.controller.load_frame(PrintPage)
         self.controller.show_frame(PrintPage)
 
     def getSelectedImage(self):

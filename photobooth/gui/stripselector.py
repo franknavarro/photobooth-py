@@ -12,20 +12,17 @@ class StripSelector(tk.Frame):
 
         # Get the option passed in if there was one
         if 'option' in kwargs:
-            option = kwargs.get('option')
+            self.option = kwargs.get('option')
         else:
-            option = 'color'
+            self.option = 'color'
 
         # Get preset depending on the option
-        if option == "grayscale":
+        if self.option == "grayscale":
             text = "Black & White"
-            pic = photostrip.grayscaleStripTK
-        elif option == "both":
+        elif self.option == "both":
             text = "Both"
-            pic = photostrip.bothTK
         else:
             text = "Color"
-            pic = photostrip.stripTK
 
         # Size the grid
         self.grid_rowconfigure(0, weight=1)
@@ -33,6 +30,8 @@ class StripSelector(tk.Frame):
         self.grid_columnconfigure(0, weight=1)
 
         # Create the image
+        self.photostrip = photostrip
+        pic = self.photostrip.getPrintTK(self.option)
         self.image = tk.Label(self, image=pic, bg=self["bg"])
         self.image.grid(row=0, column=0, sticky="nsew") 
 
@@ -44,15 +43,25 @@ class StripSelector(tk.Frame):
         if self.selected:
             self.text.configure( bg=self.highlightColor )
 
-    def toggleSelected(self):
-        self.selected = not self.selected
+    def updatePicture(self):
+        pic = self.photostrip.getPrintTK(self.option)
+        self.image.configure(image=pic)
 
+    def toggleSelected(self):
         # Change background color
         if self.selected:
-            self.text.configure(bg=self.highlightColor)
+            self.untoggle()
         else:
-            self.text.configure(bg=self["bg"])
+            self.toggleOn()
 
         # Update the screen 
         self.update()
+
+    def untoggle(self):
+        self.selected = False
+        self.text.configure(bg=self["bg"])
+
+    def toggleOn(self):
+        self.selected = True
+        self.text.configure(bg=self.highlightColor)
 

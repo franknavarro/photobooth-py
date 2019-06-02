@@ -2,8 +2,11 @@ import tkinter as tk
 
 from photobooth.pictures import StripEqualLogo
 
-from .camerapage import CameraPage
 from .labeltext import LabelText
+
+from .camerapage import CameraPage
+from .printselector import PrintSelector
+from .printpage import PrintPage
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, controller):
@@ -50,24 +53,24 @@ class MainApplication(tk.Frame):
 
         # Initialize the Camera Frame
         self.frames = {}
-        self.load_frame(CameraPage)
-        self.show_frame(CameraPage)
+        for page in (CameraPage, PrintSelector, PrintPage):
+            frame = page(self.container, self)
+            self.frames[page] = frame
+            frame.grid(row=0, column=0, stick="nsew")
+
+        self.setUpCameraPage()
 
 
     # Function to display a loaded frames in the app
-    def show_frame(self, cont):
-        frame = self.frames[cont]
+    def show_frame(self, page):
+        frame = self.frames[page]
+        frame.initializePage()
         frame.focus_set()
         frame.tkraise()
 
-    # Loads in the container from a class and then displays it
-    def load_frame(self, cont):
-        frame = cont(self.container, self)
-        self.frames[cont] = frame
-        frame.grid(row=0, column=0, stick="nsew")
 
 
-    def resetCameraPage(self):
-        self.topText.updateText("PHOTOBOOTH")
-        self.botText.updateText("PUSH BUTTON TO START")
-        self.load_showFrame(CameraPage)
+    def setUpCameraPage(self):
+        self.photostrip.reset()
+        self.printImage = ""
+        self.show_frame(CameraPage)

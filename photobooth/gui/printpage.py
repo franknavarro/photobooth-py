@@ -13,12 +13,7 @@ class PrintPage(tk.Frame):
         # Get the description texts
         self.topText = controller.topText
         self.botText = controller.botText
-        # Hide the texts as we won't use them in this
-        self.topText.updateText(self.printText)
-        self.botText.hideText()
 
-        # Get the selected image
-        self.printImage = controller.printImage
 
 
         # Open the connection to cups
@@ -26,23 +21,28 @@ class PrintPage(tk.Frame):
 
         # Get the default printer
         printers = self.connection.getPrinters().keys()
-        printerName = list(printers)[0]
-        # print(self.connection.getPrinterAttributes(printerName))
+        self.printerName = list(printers)[0]
 
         # These make it so we have no borders when printing
-        printOptions = {
+        self.printOptions = {
             "page-left":"0",
             "page-right":"0",
             "page-top":"0",
             "page-bottom":"0"
         }
 
-        # Begin the print job
-        self.printID = self.connection.printFile(printerName, self.printImage, "Photobooth", printOptions)
 
+
+    def initializePage(self):
+        # Get the selected image
+        self.printImage = self.controller.printImage
+        # Hide the texts as we won't use them in this
+        self.topText.updateText(self.printText)
+        self.botText.hideText()
+        # Begin the print job
+        self.printID = self.connection.printFile(self.printerName, self.printImage, "Photobooth", self.printOptions)
         # Update the dots so we know something is happening
         self.after(1000, self.checkPrintStatus)
-
 
     def checkPrintStatus(self):
         # Check if the print job is done
@@ -57,5 +57,5 @@ class PrintPage(tk.Frame):
             self.topText.updateText(self.printText + self.dots)
             self.after(1000, self.checkPrintStatus)
         else:
-            self.controller.resetCameraPage()
+            self.controller.setUpCameraPage()
             

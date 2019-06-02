@@ -38,11 +38,9 @@ class CameraPage(tk.Frame):
 
         # Start the camera service
         self.camera = Camera(self.cameraCoordinates, self.cameraResolution)
-        self.camera.start()
 
         # Get our photostrip instance
         self.photostrip = controller.photostrip
-        self.photoNumber = 0
         self.maxPhotos = self.photostrip.photoCount
 
 
@@ -81,8 +79,15 @@ class CameraPage(tk.Frame):
         self.cameraPad2 = tk.Frame(self, bg=self["bg"])
         self.cameraPad2.grid(row=0, column=2, sticky="nsew")
 
+
+    def initializePage(self):
+        self.photoNumber = 0
+        self.topText.updateText("PHOTOBOOTH")
+        self.botText.updateText("PUSH BUTTON TO START")
         # Bind space bar to start capturing pictures
-        self.bind('<space>', self.startCaptures)
+        self.bindID = self.bind('<space>', self.startCaptures)
+        # Start the camera service
+        self.camera.start()
 
 
     # Add a picture to the screen
@@ -98,7 +103,7 @@ class CameraPage(tk.Frame):
     # Start the process of taking photos
     def startCaptures(self, event):
         # Unbind the space bar event that triggers this function
-        self.unbind('<space>')
+        self.unbind('<space>', self.bindID)
 
         # Display the get ready text
         self.botText.updateText("Get ready!!!")
@@ -129,7 +134,6 @@ class CameraPage(tk.Frame):
             # Start counting down 
             self.after(1000, self.updateCountDown)
         else:
-            self.controller.load_frame(PrintSelector)
             self.controller.show_frame(PrintSelector)
 
 

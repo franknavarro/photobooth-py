@@ -4,16 +4,7 @@ import os
 
 class Photostrip():
     def __init__(self):
-        # Save photos being used
-        self.photoPaths = []
-        self.photosTK = []
-        self.photos = []
-
-        self.printPaths = {
-            "color": "",
-            "grayscale": "",
-            "both": ""
-        }
+        self.reset()
 
         # Set the folder for the user where we will store all our content
         folderPathList = ("Pictures", "Photobooth")
@@ -49,6 +40,31 @@ class Photostrip():
         # Set wether the photo strip will have a logo
         self.hasLogo = False
 
+    def reset(self):
+        # Save photos being used
+        self.photoPaths = []
+        self.photosTK = []
+        self.photos = []
+
+        self.printPaths = {
+            "color": "",
+            "grayscale": "",
+            "both": ""
+        }
+        
+        self.printImages = {
+            "color":"",
+            "grayscale":"",
+            "both":""
+        }
+
+        self.printsTK = {
+            "color":"",
+            "grayscale":"",
+            "both":""
+        }
+
+
     def addPhoto(self, photoPath, cameraViewSize):
         # Save the path for the photo
         self.photoPaths.append(photoPath)
@@ -78,13 +94,17 @@ class Photostrip():
             newHeight = self.printSize[1]
 
 
-        self.stripTK = ImageTk.PhotoImage(self.stripPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
-        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStripPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
-        self.bothTK = ImageTk.PhotoImage(self.bothPrint.resize((newWidth, newHeight), Image.ANTIALIAS))
+        stripTK = ImageTk.PhotoImage(self.printImages['color'].resize((newWidth, newHeight), Image.ANTIALIAS))
+        grayscaleStripTK = ImageTk.PhotoImage(self.printImages['grayscale'].resize((newWidth, newHeight), Image.ANTIALIAS))
+        bothTK = ImageTk.PhotoImage(self.printImages['both'].resize((newWidth, newHeight), Image.ANTIALIAS))
+
+        self.printsTK.update({"color":stripTK, "grayscale":grayscaleStripTK, "both":bothTK})
 
 
     def getPrintFile(self, key):
         return self.printPaths[key]
+    def getPrintTK(self, key):
+        return self.printsTK[key]
 
     def deleteUnSelected(self, selected):
         if selected == 'color':
@@ -154,31 +174,41 @@ class StripEqualLogo(Photostrip):
         stripFilePath = os.path.join(self.stripFolder, stripFilename)
         strip.save(stripFilePath)
 
-        self.strip = strip
-        self.grayscaleStrip = strip.convert('L')
+        grayscaleStrip = strip.convert('L')
 
-        self.stripPrint = Image.new("RGB", self.printSize, "white")
-        self.stripPrint.paste(self.strip, (0, 0))
-        self.stripPrint.paste(self.strip, (self.stripSize[0], 0))
-        self.stripTK = ImageTk.PhotoImage(self.stripPrint)
+        # Create the colored strip using pillow
+        stripPrint = Image.new("RGB", self.printSize, "white")
+        stripPrint.paste(strip, (0, 0))
+        stripPrint.paste(strip, (self.stripSize[0], 0))
+        # Create the TK compatible image
+        stripTK = ImageTk.PhotoImage(stripPrint)
+        # Get the file name for the printable image and save it
         colorFileName = "".join(("colored_",stripTimeStamp,".jpg"))
         colorFilePath = os.path.join(self.printFolder, colorFileName)
-        self.stripPrint.save(colorFilePath)
+        stripPrint.save(colorFilePath)
 
-        self.grayscaleStripPrint = self.stripPrint.convert('L')
-        self.grayscaleStripTK = ImageTk.PhotoImage(self.grayscaleStripPrint)
+        # Create the grayscale strip using pillow
+        grayscaleStripPrint = stripPrint.convert('L')
+        # Create the TK compatible image
+        grayscaleStripTK = ImageTk.PhotoImage(grayscaleStripPrint)
+        # Get the file name for the printable image and save it
         grayFileName = "".join(("grayscale_",stripTimeStamp,".jpg"))
         grayFilePath = os.path.join(self.printFolder, grayFileName)
-        self.grayscaleStripPrint.save(grayFilePath)
+        grayscaleStripPrint.save(grayFilePath)
 
-        self.bothPrint = Image.new("RGB", self.printSize, "white")
-        self.bothPrint.paste(self.strip, (0, 0))
-        self.bothPrint.paste(self.grayscaleStrip, (self.stripSize[0], 0))
-        self.bothTK = ImageTk.PhotoImage(self.bothPrint)
+        # Create the grayscale strip using pillow
+        bothPrint = Image.new("RGB", self.printSize, "white")
+        bothPrint.paste(strip, (0, 0))
+        bothPrint.paste(grayscaleStrip, (self.stripSize[0], 0))
+        # Create the TK compatible image
+        bothTK = ImageTk.PhotoImage(bothPrint)
+        # Get the file name for the printable image and save it
         bothFileName = "".join(("both_",stripTimeStamp,".jpg"))
         bothFilePath = os.path.join(self.printFolder, bothFileName)
-        self.bothPrint.save(bothFilePath)
+        bothPrint.save(bothFilePath)
 
         self.printPaths.update({"color":colorFilePath, "grayscale":grayFilePath, "both":bothFilePath})
+        self.printImages.update({"color":stripPrint, "grayscale":grayscaleStripPrint, "both":bothPrint})
+        self.printsTK.update({"color":stripTK, "grayscale":grayscaleStripTK, "both":bothTK})
 
 
