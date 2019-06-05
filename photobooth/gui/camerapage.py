@@ -71,7 +71,7 @@ class CameraPage(tk.Frame):
         self.picture = tk.Label(self.pictureFrame, width=self.cameraContainer[2], height=self.cameraContainer[3], bg=offWhiteColor)
         self.picture.grid(row=0, column=0, sticky="nsew")
 
-        self.countDownBar = CountDownBar(self.pictureFrame, maxTime=self.maxCountDown-1, height=countBarHeight)
+        self.countDownBar = CountDownBar(self.pictureFrame, maxTime=self.maxCountDown, height=countBarHeight)
         self.countDownBar.grid(row=1, column=0, sticky="nsew")
 
 
