@@ -72,7 +72,7 @@ class CameraPage(tk.Frame):
         self.picture = tk.Label(self.pictureFrame, width=self.cameraContainer[2], height=self.cameraContainer[3], bg=offWhiteColor)
         self.picture.grid(row=0, column=0, sticky="nsew")
 
-        self.countDownBar = CountDownBar(self.pictureFrame, maxTime=self.maxCountDown, height=countBarHeight)
+        self.countDownBar = CountDownBar(self.pictureFrame, maxTime=self.maxCountDown, height=countBarHeight, callback=self.takePhoto, secondsLabel=self.botText.text)
         self.countDownBar.grid(row=1, column=0, sticky="nsew")
 
 
@@ -133,7 +133,8 @@ class CameraPage(tk.Frame):
             self.topText.updateText("Photo {} of {}".format(self.photoNumber, self.maxPhotos))
 
             # Start counting down 
-            self.after(1000, self.updateCountDown)
+            #self.after(1000, self.updateCountDown)
+            self.countDownBar.start()
         else:
             self.controller.show_frame(PrintSelector)
 
@@ -147,9 +148,6 @@ class CameraPage(tk.Frame):
             self.botText.updateText(self.currentCountDown)
             self.currentCountDown -= 1
             self.after(1000, self.updateCountDown)
-        # If count down is at zero then take a photo
-        else:
-            self.takePhoto()
 
 
     # Process to take a photo and display it for the user to see

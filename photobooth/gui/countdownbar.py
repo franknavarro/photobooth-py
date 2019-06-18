@@ -1,4 +1,5 @@
 import tkinter as tk
+import math
 from photobooth.settings import config
 
 class CountDownBar(tk.Canvas):
@@ -22,21 +23,28 @@ class CountDownBar(tk.Canvas):
         else:
             self.maxSeconds = 5
 
+        # Access a label that will update will display the seconds counted down
+        if 'secondsLabel' in kwargs:
+            self.secondsLabel = kwargs.get('secondsLabel')
+        else:
+            self.secondsLabel = None
+
         # Check if a call back function is defined
         if 'callback' in kwargs:
             self.callback = kwargs.get('callback')
         else:
             self.callback = None
 
-        # Calculate the time
-        self.time = int(self.maxSeconds * 1000)
-        self.updateTime = 10
 
         # Create the bar we will be updating
         self.bar = self.create_rectangle(0, 0, 0, 0, fill=self.color, outline="")
 
 
     def start(self):
+        # Calculate the time
+        self.time = int(self.maxSeconds * 1000)
+        self.seconds = self.maxSeconds
+        self.updateTime = 25
         # Get the size of the count down line
         self.update()
         self.barWidth = self.winfo_width()
@@ -51,14 +59,24 @@ class CountDownBar(tk.Canvas):
     def updateBar(self):
         # As long as we have more time decrement the bars length
         if self.time >= 0:
+            # The new bar size
             self.barWidth -= self.updateSize
+            # The new time in milliseconds
             self.time -= self.updateTime
+            self.seconds = math.ceil(self.time / 1000)
+
+            # If there is a seconds label update it only if the time is greater than 0
+            #   This is necessary because above we only check if time is greater than or 
+            #   equal to 0 because we want the bar to reach bellow 0 so it "disapears"
+            if self.secondsLabel and self.time > 0:
+                self.secondsLabel.configure(text=self.seconds)
+
+            # Refresh the page to show the new bar size
             self.coords(self.bar, (0, 0, self.barWidth, self.height))
             self.update()
             self.after(self.updateTime, self.updateBar)
 
         # Once time is out reset out time variable
         else:
-            self.time = int(self.maxSeconds * 1000)
             if self.callback:
                 self.callback()
