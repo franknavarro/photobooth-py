@@ -2,6 +2,7 @@ import tkinter as tk
 import sys
 
 from .mainapplication import MainApplication
+from photobooth.settings import config
 
 class RootWindow(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -21,7 +22,7 @@ class RootWindow(tk.Tk):
         self.bind('<Escape>', self.close)
 
         # Create container to hold all frames
-        self.container = tk.Frame(self, bg="#F2AFB0")
+        self.container = tk.Frame(self, bg=config['Apperance']['mainColor'])
         self.container.pack(side="top", fill="both", expand=True)
 
         # Center container in window

@@ -36,11 +36,9 @@ class PrintPage(tk.Frame):
             "page-bottom":"0"
         }
 
-        # Only used for testing
-        self.count = 0
-
 
     def initializePage(self):
+        # Only used for testing
         self.count = 0
         # Update all the text for this page
         self.topText.hideText()
@@ -64,7 +62,7 @@ class PrintPage(tk.Frame):
 
     def checkPrintStatus(self):
         # Check if the print job is done
-        #if self.connection.getJobs().get(self.printID, None) is not None:
+        # if self.connection.getJobs().get(self.printID, None) is not None:
         if self.count < 10:
             self.count += 1
             # Add a dot

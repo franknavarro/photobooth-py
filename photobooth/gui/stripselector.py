@@ -1,4 +1,5 @@
 import tkinter as tk
+from photobooth.settings import config
 
 
 class StripSelector(tk.Frame):
@@ -39,7 +40,7 @@ class StripSelector(tk.Frame):
         self.text = tk.Label(self, text=text, bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
         self.text.grid(row=1, column=0, sticky="nsew")
 
-        self.highlightColor = "#AFF2F1"
+        self.highlightColor = config['Apperance']['secondaryColor']
         if self.selected:
             self.text.configure( bg=self.highlightColor )
 
