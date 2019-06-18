@@ -1,15 +1,40 @@
 import configparser
+import json
+import os
 
-config = configparser.SafeConfigParser()
+
+class MyConfigParser(configparser.SafeConfigParser):
+    def __init__(self):
+        configparser.SafeConfigParser.__init__(self)
+    
+        # Set the default Apperance values
+        self['Apperance'] = {
+            'mainColor':'#F2AFB0',
+            'secondaryColor':'#AFF2F1'
+        }
+
+        # Set the default Interaction values
+        self['Interactions'] = {
+            'imageCountdown': 5,
+            'stripCountdown': 15
+        }
+
+        # Set the default Photostrip values
+        self['Photostrip'] = {
+            'folderPath': os.path.expanduser('~/Pictures/Photobooth'),
+            'type': 'vertical',
+        }
+
+        # Set the default StripVertical values
+        self['StripVertical'] = {
+            'hasLogo': 'yes',
+            'photoCount': 3,
+            'paperSize': '[4,6]',
+            'border': 0.125
+        }
+
+    def getlist(self, section, subsection):
+        return json.loads(self.get(section, subsection))
 
 
-config['Apperance'] = {
-    'mainColor':'#F2AFB0',
-    'secondaryColor':'#AFF2F1'
-}
-
-config['Interactions'] = {
-    'imageCountdown': 5,
-    'stripCountdown': 15
-}
-
+config = MyConfigParser()

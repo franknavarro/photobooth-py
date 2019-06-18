@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from photobooth.pictures import StripEqualLogo
+from photobooth.pictures import photostrip
 
 from .labeltext import LabelText
 
@@ -13,7 +13,7 @@ class MainApplication(tk.Frame):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
 
         # Initialize the photostrip
-        self.photostrip = StripEqualLogo()
+        self.photostrip = photostrip
         self.printImage = ""
 
         # Calculate sizes for our various frames
