@@ -40,7 +40,7 @@ class StripSelector(tk.Frame):
         self.text = tk.Label(self, text=text, bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
         self.text.grid(row=1, column=0, sticky="nsew")
 
-        self.highlightColor = config['Apperance']['secondaryColor']
+        self.highlightColor = config.get('Apperance', 'secondaryColor')
         if self.selected:
             self.text.configure( bg=self.highlightColor )
 

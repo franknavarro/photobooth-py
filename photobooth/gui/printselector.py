@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from photobooth.settings import config
 from .countdownbar import CountDownBar
 from .stripselector import StripSelector
 from .printpage import PrintPage
@@ -54,7 +55,7 @@ class PrintSelector(tk.Frame):
         self.bothImage.grid(row=0, column=2, sticky="nsew") 
 
         # Create a count down bar
-        self.countTime = 10
+        self.countTime = config.getint('Interactions', 'stripCountDown')
         self.countDown = CountDownBar(self, maxTime=self.countTime, height=countHeight, callback=self.startPrint)
         self.countDown.grid(row=1, column=0, columnspan=3, sticky="nsew")
 

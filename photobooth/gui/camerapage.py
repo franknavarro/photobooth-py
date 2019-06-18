@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from photobooth.camera import Camera
+from photobooth.settings import config
 from .countdownbar import CountDownBar
 from .printselector import PrintSelector
 
@@ -45,7 +46,7 @@ class CameraPage(tk.Frame):
 
 
         #Initialize the count down sequence
-        self.maxCountDown = 5
+        self.maxCountDown = config.getint('Interactions', 'imageCountdown')
 
         # Keep references here of the the top and bottom text of the parent for future use
         self.topText = controller.topText
