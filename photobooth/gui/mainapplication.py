@@ -11,6 +11,7 @@ from .printpage import PrintPage
 class MainApplication(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
+        self.controller = controller
 
         # Initialize the photostrip
         self.photostrip = photostrip
@@ -58,19 +59,27 @@ class MainApplication(tk.Frame):
             self.frames[page] = frame
             frame.grid(row=0, column=0, stick="nsew")
 
+
+    def open(self):
+        # Start the application with the camera page
         self.setUpCameraPage()
 
+    # A function to return the camera page
+    # Mainly used for the key bindings in the root window
+    def getCameraPage(self):
+        return self.frames[CameraPage]
 
-    # Function to display a loaded frames in the app
+
+    # Function to display a loaded frame in the app
     def show_frame(self, page):
         frame = self.frames[page]
         frame.initializePage()
         frame.focus_set()
         frame.tkraise()
 
-
-
+    # Show the camera page and reset the strip
     def setUpCameraPage(self):
         self.photostrip.reset()
         self.printImage = ""
         self.show_frame(CameraPage)
+

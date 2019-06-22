@@ -86,7 +86,7 @@ class CameraPage(tk.Frame):
         self.topText.updateText("PHOTOBOOTH")
         self.botText.updateText("PUSH BUTTON TO START")
         # Bind space bar to start capturing pictures
-        self.bindID = self.bind('<space>', self.startCaptures)
+        #self.bind('<space>', self.startCaptures)
         # Start the camera service
         self.camera.start()
 
@@ -102,9 +102,9 @@ class CameraPage(tk.Frame):
 
 
     # Start the process of taking photos
-    def startCaptures(self, event):
+    def startCaptures(self, event=None):
         # Unbind the space bar event that triggers this function
-        self.unbind('<space>', self.bindID)
+        #self.unbind('<space>')
 
         # Display the get ready text
         self.botText.updateText("Get ready!!!")

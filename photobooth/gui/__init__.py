@@ -2,6 +2,7 @@ import tkinter as tk
 import sys
 
 from .mainapplication import MainApplication
+from .settingsmain import SettingsMain
 from photobooth.settings import config
 
 class RootWindow(tk.Tk):
@@ -18,8 +19,6 @@ class RootWindow(tk.Tk):
         # Hide cursor
         self.configure(cursor='none')
 
-        # Bind the Escape Key to close the application
-        self.bind('<Escape>', self.close)
 
         # Create container to hold all frames
         self.container = tk.Frame(self, bg=config.get('Apperance', 'mainColor'))
@@ -31,24 +30,56 @@ class RootWindow(tk.Tk):
 
         # Set up all the frames used in the app
         self.frames = {}
+        for page in (MainApplication, SettingsMain):
+            frame = page(self.container, self)
+            self.frames[page] = frame
+            frame.grid(row=0, column=0, stick="nsew")
+
+        # Bind the Escape Key to close the application
+        self.bind('<Escape>', self.close)
+
+        # Save an instance of the camera page here
+        self.campage = self.frames[MainApplication].getCameraPage()
+        print(self.campage)
 
         # Show the start page to begin with
-        self.load_frame(MainApplication)
-        self.show_frame(MainApplication)
+        self.showMain()
 
     
     # Function to display a loaded frames in the app
     def show_frame(self, cont):
         frame = self.frames[cont]
-        frame.focus_set()
+        frame.open()
         frame.tkraise()
+        frame.focus_set()
 
-    # Loads in the container from a class and then displays it
-    def load_frame(self, cont):
-        frame = cont(self.container, self)
-        self.frames[cont] = frame
-        frame.grid(row=0, column=0, stick="nsew")
+    # Show the settings page
+    def showSettings(self, event=None):
+        # Unbind the key to show the settings page
+        # Since we are in it
+        self.unbind('s')
+        # Stop the camera
+        self.campage.camera.stop()
+        self.unbind('<space>')
+        # Show the settings page
+        self.show_frame(SettingsMain)
 
+    # Show the Main Application
+    def showMain(self, event=None):
+        # Bind the 's' key to the settings menu
+        self.bind('s', self.showSettings)
+        # Bind the 'space bar to the captues screen
+        self.bind('<space>', self.startApplication)
+        self.show_frame(MainApplication)
+
+    # Start taking the pictures and unbind key presses to not mess with things
+    def startApplication(self, event=None):
+        self.unbind('<space>')
+        self.unbind('s')
+        self.campage.startCaptures()
+        
+
+    # Function to get the size of the window
     def get_size(self):
         self.update_idletasks()
         return (self.winfo_width(), self.winfo_height())

@@ -76,5 +76,5 @@ class PrintPage(tk.Frame):
             self.after(1000, self.checkPrintStatus)
         else:
             self.canvas.delete(self.text)
-            self.controller.setUpCameraPage()
+            self.controller.controller.showMain()
             
