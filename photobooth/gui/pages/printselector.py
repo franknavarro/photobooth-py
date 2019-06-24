@@ -1,9 +1,8 @@
 import tkinter as tk
 
 from photobooth.settings import config
-from .countdownbar import CountDownBar
-from .stripselector import StripSelector
-from .printpage import PrintPage
+from ..components.countdownbar import CountDownBar
+from ..components.stripselector import StripSelector
 
 class PrintSelector(tk.Frame):
     def __init__(self, parent, controller):
@@ -96,7 +95,7 @@ class PrintSelector(tk.Frame):
     def startPrint(self):
         self.unbind('<space>', self.bindID)
         self.controller.printImage = self.getSelectedImage()
-        self.controller.show_frame(PrintPage)
+        self.controller.showNextPage()
 
     def getSelectedImage(self):
         if self.coloredImage.selected:

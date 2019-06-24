@@ -2,11 +2,11 @@ import tkinter as tk
 
 from photobooth.pictures import photostrip
 
-from .labeltext import LabelText
+from .components.labeltext import LabelText
 
-from .camerapage import CameraPage
-from .printselector import PrintSelector
-from .printpage import PrintPage
+from .pages.camerapage import CameraPage
+from .pages.printselector import PrintSelector
+from .pages.printpage import PrintPage
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, controller):
@@ -54,7 +54,9 @@ class MainApplication(tk.Frame):
 
         # Initialize the Camera Frame
         self.frames = {}
-        for page in (CameraPage, PrintSelector, PrintPage):
+        self.framesList = (CameraPage, PrintSelector, PrintPage)
+        self.frameIndex = 0
+        for page in self.framesList:
             frame = page(self.container, self)
             self.frames[page] = frame
             frame.grid(row=0, column=0, stick="nsew")
@@ -82,4 +84,14 @@ class MainApplication(tk.Frame):
         self.photostrip.reset()
         self.printImage = ""
         self.show_frame(CameraPage)
+        self.frameIndex = 0
+
+
+    # Function to sequencially go through the pages of the application
+    def showNextPage(self):
+        self.frameIndex += 1
+        if (self.frameIndex > 2 ):
+            self.frameIndex = 0
+        nextPage = self.framesList[self.frameIndex]
+        self.show_frame(nextPage)
 
