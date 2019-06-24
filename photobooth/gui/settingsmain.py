@@ -4,6 +4,8 @@ from .settings.apperancetab import ApperanceTab
 from .settings.interactionstab import InteractionsTab
 from .settings.photostriptab import PhotostripTab
 
+from .components.tablabel import TabLabel
+
 class SettingsMain(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
@@ -11,10 +13,10 @@ class SettingsMain(tk.Frame):
         self.controller = controller
 
         # Initialize the grid for the page
-        self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=10)
 
         self.tabs = (ApperanceTab, InteractionsTab, PhotostripTab)
+        self.tabNames = ("Apperances", "Interactions", "Photostrip")
 
         # Set up the container where the tabs will be displayed
         self.container = tk.Frame(self, bg=self["bg"])
@@ -24,13 +26,26 @@ class SettingsMain(tk.Frame):
 
 
         # Initialize the different settings tabs
-        self.frames = {}
+        self.frames = []
+        self.tabLabels = []
+        self.activeTab = 0
         for index, tab in enumerate(self.tabs):
             # Initialize the tab column that this will be in
             self.grid_columnconfigure(index, weight=1)
+            tabLabel = TabLabel(self, index, self.tabNames[index])
+            self.tabLabels.append(tabLabel)
+            # Get the padding around the label
+            pad = 5
+            if index == 0:
+                padding = (0, pad)
+            elif index == len(self.tabs) - 1:
+                padding = (pad, 0)
+            else:
+                padding = pad
+            tabLabel.grid(row=0, column=index, sticky="nsew", padx=padding, ipady=20)
             # Initialize the page assosiated with the tab
             frame = tab(self.container, self)
-            self.frames[tab] = frame
+            self.frames.append(frame)
             frame.grid(row=0, column=0, stick="nsew")
 
 
@@ -40,7 +55,16 @@ class SettingsMain(tk.Frame):
         self.configure(cursor='arrow')
         # Bind the close key
         self.bind('x', self.close)
-        self.show_frame(self.tabs[0])
+        self.changeSelected(0)
+
+    # Çhange the selected tab to the new index selected tab
+    def changeSelected(self, newTab):
+        self.tabLabels[self.activeTab].unselect()
+        self.activeTab = newTab
+        self.tabLabels[newTab].select()
+        frame = self.frames[newTab]
+        frame.tkraise()
+        frame.focus_set()
 
     # Function that will show the correct tab page
     def show_frame(self, cont):
