@@ -6,6 +6,8 @@ import os
 class MyConfigParser(configparser.SafeConfigParser):
     def __init__(self):
         configparser.SafeConfigParser.__init__(self)
+
+        self.filename = 'config.ini';
     
         # Set the default Apperance values
         self['Apperance'] = {
@@ -33,8 +35,19 @@ class MyConfigParser(configparser.SafeConfigParser):
             'border': 0.125
         }
 
+        self.readFromFile()
+
     def getlist(self, section, subsection):
         return json.loads(self.get(section, subsection))
 
+    def saveToFile(self):
+        with open(self.filename, 'w') as configfile:
+            self.write(configfile)
+
+    def readFromFile(self):
+        self.read(self.filename)
+
+
 
 config = MyConfigParser()
+config.readFromFile()
