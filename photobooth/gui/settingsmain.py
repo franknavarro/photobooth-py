@@ -53,8 +53,6 @@ class SettingsMain(tk.Frame):
     def open(self):
         # Reshow the arrow
         self.configure(cursor='arrow')
-        # Bind the close key
-        self.bind('x', self.close)
         self.changeSelected(0)
 
     # Çhange the selected tab to the new index selected tab
@@ -72,12 +70,10 @@ class SettingsMain(tk.Frame):
         frame.tkraise()
         frame.focus_set()
 
-    # Show the main application once again and unbind the close button
+    # Show the main application once again 
     def close(self, event=None):
         # Rehide the cursor
         self.configure(cursor='none')
-        # Unbind the close button
-        self.unbind('x')
         # Show the main application
         self.controller.showMain()
 
