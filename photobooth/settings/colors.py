@@ -5,7 +5,7 @@
 
 # Find the complimenatry hex color of the hex color passed in
 def hex_complimentary(startHex):
-    print("COMPUTING COMPLIMENTARY COLOR FROM HEX: ", startHex)
+    #print("COMPUTING COMPLIMENTARY COLOR FROM HEX: ", startHex)
     # Convert hex to hsl
     hsl = hex_hsl(startHex)
     # Get complimentary color by moving the hue 180 degrees (1/2 of 360 degrees)
@@ -13,7 +13,7 @@ def hex_complimentary(startHex):
     if( newHue > 1 ):
         newHue -= 1
     newHSL = (newHue, hsl[1], hsl[2])
-    print("COMPLIMENTARY HSL: ", newHSL)
+    #print("COMPLIMENTARY HSL: ", newHSL)
     # Convert back to hex color
     newHex = hsl_hex(newHSL)
     # Set the new complimentary color
@@ -65,7 +65,7 @@ def hsl_rgb(hslColor):
         blueNum = hue_rgb(var1, var2, hslColor[0]-1/3)
 
     returnRGB = (redNum, greenNum, blueNum)
-    print("HSL -> RGB: ", hslColor, " -> ", returnRGB)
+    #print("HSL -> RGB: ", hslColor, " -> ", returnRGB)
     return returnRGB
 
 
@@ -85,7 +85,7 @@ def rgb_hex(rgbColor):
         blueHex = "0" + blueHex
 
     returnHex = ("#" + redHex + greenHex + blueHex).upper()
-    print("RGB -> HEX: ", rgbColor, " -> ", returnHex)
+    #print("RGB -> HEX: ", rgbColor, " -> ", returnHex)
     return returnHex
 
 
@@ -108,7 +108,7 @@ def hex_rgb(hexColor):
     blueNum = int(blueHex, 16) 
 
     returnRGB = (redNum, greenNum, blueNum)
-    print("HEX -> RGB: ", hexColor, " -> ", returnRGB)
+    #print("HEX -> RGB: ", hexColor, " -> ", returnRGB)
     return returnRGB
 
 
@@ -149,7 +149,7 @@ def rgb_hsl(rgbColor):
             hue -= 1
 
     returnHSL = (hue, saturation, luminence)
-    print("RGB -> HSL: ", rgbColor, " -> ", returnHSL)
+    #print("RGB -> HSL: ", rgbColor, " -> ", returnHSL)
     return returnHSL 
 
 
