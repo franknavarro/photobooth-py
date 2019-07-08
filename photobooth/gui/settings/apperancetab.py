@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import colorchooser
 
 from photobooth.settings import config
 
@@ -31,12 +32,34 @@ class ColorEntry():
         # Set the color for the field
         self.color = tk.StringVar()
         self.color.set(config.get('Apperance', colorType))
+        self.color.trace("w", self.updateColorBox)
 
         # Initialize the header text
-        headerText = "Main Color: " if colorType == 'mainColor' else "Secondary Color: "
-        self.header = tk.Label(parent, font=parent.font, text=headerText, bg=parent["bg"], fg="white")
+        self.headerText = "Main Color" if colorType == 'mainColor' else "Secondary Color"
+        self.header = tk.Label(parent, font=parent.font, text=self.headerText+":", bg=parent["bg"], fg="white")
         self.header.grid(row=row, column=0, sticky="nse", pady=parent.bottomPadding)
 
+
         # Initialize the text entry field
-        self.entry = tk.Entry(parent, font=("", parent.font[1]), width=8, relief="flat", textvariable=self.color)
-        self.entry.grid(row=row, column=1, sticky="nsew", pady=parent.bottomPadding)
+        self.entry = tk.Entry(parent, font=("", parent.font[1]), width=8, relief="flat", textvariable=self.color, state="readonly", readonlybackground="white")
+        self.entry.grid(row=row, column=1, sticky="nsew", pady=parent.bottomPadding, padx=(20, 20))
+        self.entry.bind('<Button-1>', self.colorPicker)
+
+        # Show a preview box of the color entry
+        parent.update_idletasks()
+        previewSize = self.entry.winfo_height()
+        self.previewCanvas = tk.Canvas(parent, width=previewSize, height=previewSize)
+        self.preview = self.previewCanvas.create_rectangle(0, 0, previewSize, previewSize, fill=self.color.get())
+        self.previewCanvas.grid(row=row, column=2, sticky="nsw", pady=parent.bottomPadding)
+
+
+    def colorPicker(self, event=None):
+        tempColor = colorchooser.askcolor(initialcolor=self.color.get(), title=self.headerText)
+        if(tempColor[1]):
+            self.color.set(tempColor[1])
+        #else:
+            #print("CANCELLED COLOR PICKER")
+
+    def updateColorBox(self, *args):
+        self.previewCanvas.itemconfig(self.preview, fill=self.color.get())
+
