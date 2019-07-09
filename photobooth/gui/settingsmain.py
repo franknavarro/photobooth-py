@@ -39,16 +39,7 @@ class SettingsMain(tk.Frame):
             self.tabFrame.grid_columnconfigure(index, weight=1)
             tabLabel = TabLabel(self.tabFrame, self, index, self.tabNames[index])
             self.tabLabels.append(tabLabel)
-            # Get the padding around the label
-            pad = 7
-            padHalf = pad/2
-            if index == 0:
-                padding = (0, padHalf)
-            elif index == len(self.tabs) - 1:
-                padding = (padHalf, 0)
-            else:
-                padding = padHalf
-            tabLabel.grid(row=0, column=index, sticky="nsew", ipady=20, padx=padding, pady=(0, pad))
+            tabLabel.grid(row=0, column=index, sticky="nsew", )
             # Initialize the page assosiated with the tab
             frame = tab(self.container, self)
             self.frames.append(frame)
@@ -64,10 +55,8 @@ class SettingsMain(tk.Frame):
     # Çhange the selected tab to the new index selected tab
     def changeSelected(self, newTab):
         self.tabLabels[self.activeTab].unselect()
-        self.tabLabels[self.activeTab].grid_configure(pady=(0, 7))
         self.activeTab = newTab
         self.tabLabels[newTab].select()
-        self.tabLabels[newTab].grid_configure(pady=0)
         frame = self.frames[newTab]
         frame.tkraise()
         frame.focus_set()
