@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from photobooth.settings import config
 
 # A class to format the bottom and top text of the application
 class LabelText(tk.Frame):
@@ -11,7 +12,7 @@ class LabelText(tk.Frame):
         self.grid_rowconfigure(0, weight=1)
 
         # Add the text to this frame
-        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=self["bg"], fg="white")
+        self.text = tk.Label(self, text=initText, font=("Droid", 65, "bold"), bg=self["bg"], fg=config.get('Apperance', 'fontColor'))
         # Position this text in the frame
         self.text.grid(row=0, column=0, sticky="nsew")
 

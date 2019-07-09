@@ -2,6 +2,8 @@ import tkinter as tk
 import cups
 import os
 
+from photobooth.settings import config
+
 class PrintPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
@@ -43,7 +45,7 @@ class PrintPage(tk.Frame):
         # Update all the text for this page
         self.topText.hideText()
         self.botText.hideText()
-        self.text = self.canvas.create_text(0, 0, fill="white", text=self.printText, font=("Droid", 65, "bold"), anchor="nw")
+        self.text = self.canvas.create_text(0, 0, fill=config.get('Apperance', 'fontColor'), text=self.printText, font=("Droid", 65, "bold"), anchor="nw")
         self.dots = ""
         # Get the selected image
         self.printImage = self.controller.printImage

@@ -12,7 +12,9 @@ class MyConfigParser(configparser.SafeConfigParser):
         # Set the default Apperance values
         self['Apperance'] = {
             'mainColor':'#F2AFB0',
-            'secondaryColor':'#AFF2F1'
+            'secondaryColor':'#AFF2F1',
+            'fontColor': '#FFFFFF',
+            'font': '["Droid", 65, "bold"]
         }
 
         # Set the default Interaction values

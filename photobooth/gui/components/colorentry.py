@@ -26,7 +26,7 @@ class ColorEntry():
 
         # Initialize the header text
         self.headerText = title
-        self.header = tk.Label(parent, font=constants.font, text=self.headerText+":", bg=parent["bg"], fg=constants.fontColor)
+        self.header = tk.Label(parent, font=constants.font, text=self.headerText+":", bg=parent["bg"], fg=config.get('Apperance', 'fontColor'))
         self.header.grid(row=row, column=0, sticky="nse", pady=bottomPadding)
 
         # Initialize the text entry field
@@ -43,8 +43,7 @@ class ColorEntry():
 
         # Get things depending on wether using main or secondary color
         if ( autoComplimentary ):
-            buttonColor = config.get('Apperance', 'secondaryColor')
-            self.autoButton = HoverButton(parent, text="Auto Color", command=self.computeComplimentary, font=constants.font, fg="white", bg=buttonColor)
+            self.autoButton = HoverButton(parent, text="Get Complimentary", command=self.computeComplimentary)
             self.autoButton.grid(row=row, column=3, sticky="nsw", pady=bottomPadding, padx=sidePadding)
 
 

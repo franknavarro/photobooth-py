@@ -5,6 +5,9 @@ from .settings.interactionstab import InteractionsTab
 from .settings.photostriptab import PhotostripTab
 
 from .components.tablabel import TabLabel
+from .components.hoverbutton import HoverButton
+
+import photobooth.settings.constants as constants
 
 class SettingsMain(tk.Frame):
     def __init__(self, parent, controller):
@@ -45,6 +48,22 @@ class SettingsMain(tk.Frame):
             self.frames.append(frame)
             frame.grid(row=0, column=0, stick="nsew")
 
+        # Initialize the frame to hold the the save and exit buttons
+        self.saveContainer = tk.Frame(self, bg=self["bg"])
+        self.saveContainer.grid(row=2, column=0, sticky="nsew")
+        self.saveContainer.grid_rowconfigure(0, weight=1)
+        self.saveContainer.grid_columnconfigure(0, weight=1)
+        # Create Save Button
+        savePadding = (constants.fieldPadding, constants.fieldPadding/2)
+        self.saveButton = HoverButton(self.saveContainer, text="Save", command=self.save)
+        self.saveButton.grid(row=0, column=1, pady=constants.fieldPadding, padx=savePadding)
+        # Create Exit Button
+        exitPadding = (constants.fieldPadding/2, constants.fieldPadding)
+        self.exitButton = HoverButton(self.saveContainer, text="Exit", command=self.close)
+        self.exitButton.grid(row=0, column=2, pady=constants.fieldPadding, padx=exitPadding)
+
+    def save(self):
+        print("SAVING THINGS")
 
     # Perform any initial configurations
     def open(self):

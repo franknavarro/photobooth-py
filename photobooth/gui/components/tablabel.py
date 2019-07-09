@@ -1,11 +1,13 @@
 import tkinter as tk
 
+from photobooth.settings import config
+
 class TabLabel(tk.Label):
     def __init__(self, parent, controller, index, text):
         self.controller = controller
         self.bgcolor = controller["bg"]
 
-        tk.Label.__init__(self, parent, bg=self.bgcolor, text=text, font=("Droid", 45, "bold"), fg="white", cursor="hand1")
+        tk.Label.__init__(self, parent, bg=self.bgcolor, text=text, font=("Droid", 45, "bold"), fg=config.get('Apperance', 'fontColor'), cursor="hand1")
 
         self.index = index
 
