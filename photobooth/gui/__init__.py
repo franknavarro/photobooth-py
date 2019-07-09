@@ -59,15 +59,11 @@ class RootWindow(tk.Tk):
         # Stop the camera
         self.campage.camera.stop()
         self.unbind('<space>')
-        # Add a binding to close the settings page
-        self.bind('x', self.frames[SettingsMain].close)
         # Show the settings page
         self.show_frame(SettingsMain)
 
     # Show the Main Application
     def showMain(self, event=None):
-        # Unbind the 'x' close key used in the settings
-        self.unbind('x')
         # Bind the 's' key to the settings menu
         self.bind('s', self.showSettings)
         # Bind the 'space bar to the captues screen
