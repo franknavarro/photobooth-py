@@ -2,15 +2,11 @@
 
 import tkinter as tk
 
-from photobooth.settings import config
+from photobooth.settings.constants import darksetting
 
 class HoverButton(tk.Button):
-    def __init__(self, master, **kw):
-        tk.Button.__init__(self,master=master,**kw)
-        self["fg"] = config.get('Apperance', 'fontColor')
-        self["bg"] = config.get('Apperance', 'secondaryColor')
-        self['font'] = ("Droid", 25, "bold")
-        self['cursor'] = "hand1"
+    def __init__(self, master, font=darksetting['font'], fg=darksetting['fg'], bg=darksetting['primary'], cursor='hand1', **kw):
+        tk.Button.__init__(self, master=master, fg=fg, font=font, bg=bg, cursor=cursor, **kw)
 
         self.defaultBackground = self['background']
         self.defaultFontColor = self['foreground']

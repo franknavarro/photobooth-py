@@ -2,15 +2,17 @@ import tkinter as tk
 from tkinter import colorchooser
 
 import photobooth.settings.colors as colorconvert
-import photobooth.settings.constants as constants
+
+from photobooth.settings.constants import globe
+from photobooth.settings.constants import darksetting
 
 from .hoverbutton import HoverButton
 from photobooth.settings import config
 
 class ColorEntry():
     def __init__(self, parent, row=None, title="Color", color="#000000", autoComplimentary=False, complimentaryField=None):
-        sidePadding = (constants.fieldPadding, constants.fieldPadding)
-        bottomPadding = (0, constants.fieldPadding)
+        sidePadding = (globe['fieldPadding'], globe['fieldPadding'])
+        bottomPadding = (0, globe['fieldPadding'])
 
         # Set the color for the field
         self.colorField = tk.StringVar()
@@ -26,11 +28,11 @@ class ColorEntry():
 
         # Initialize the header text
         self.headerText = title
-        self.header = tk.Label(parent, font=constants.font, text=self.headerText+":", bg=parent["bg"], fg=config.get('Apperance', 'fontColor'))
+        self.header = tk.Label(parent, font=darksetting['font'], text=self.headerText+":", bg=parent["bg"], fg=darksetting['fg'])
         self.header.grid(row=row, column=0, sticky="nse", pady=bottomPadding)
 
         # Initialize the text entry field
-        self.entry = tk.Entry(parent, font=("", constants.font[1]), width=8, relief="flat", textvariable=self.colorField, state="readonly", readonlybackground="white")
+        self.entry = tk.Entry(parent, font=darksetting['font'], width=8, relief="flat", textvariable=self.colorField, state="readonly", readonlybackground="white")
         self.entry.grid(row=row, column=1, sticky="nsew", pady=bottomPadding, padx=sidePadding)
         self.entry.bind('<Button-1>', self.colorPicker)
 

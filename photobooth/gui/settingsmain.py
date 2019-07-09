@@ -7,11 +7,12 @@ from .settings.photostriptab import PhotostripTab
 from .components.tablabel import TabLabel
 from .components.hoverbutton import HoverButton
 
-import photobooth.settings.constants as constants
+from  photobooth.settings.constants import globe
+from  photobooth.settings.constants import darksetting
 
 class SettingsMain(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg=parent["bg"])
+        tk.Frame.__init__(self, parent, bg=darksetting["primary"])
 
         self.controller = controller
 
@@ -22,7 +23,7 @@ class SettingsMain(tk.Frame):
         # Set up the tabs and their container frame
         self.tabs = (ApperanceTab, InteractionsTab, PhotostripTab)
         self.tabNames = ("Apperances", "Interactions", "Photostrip")
-        self.tabFrame = tk.Frame(self, bg="#808080")
+        self.tabFrame = tk.Frame(self, bg=self["bg"])
         self.tabFrame.grid(row=0, column=0, sticky="nsew")
         self.tabFrame.grid_rowconfigure(0, weight=1)
 
@@ -54,13 +55,13 @@ class SettingsMain(tk.Frame):
         self.saveContainer.grid_rowconfigure(0, weight=1)
         self.saveContainer.grid_columnconfigure(0, weight=1)
         # Create Save Button
-        savePadding = (constants.fieldPadding, constants.fieldPadding/2)
+        savePadding = (globe['fieldPadding'], globe['fieldPadding']/2)
         self.saveButton = HoverButton(self.saveContainer, text="Save", command=self.save)
-        self.saveButton.grid(row=0, column=1, pady=constants.fieldPadding, padx=savePadding)
+        self.saveButton.grid(row=0, column=1, pady=globe['fieldPadding'], padx=savePadding)
         # Create Exit Button
-        exitPadding = (constants.fieldPadding/2, constants.fieldPadding)
+        exitPadding = (globe['fieldPadding']/2, globe['fieldPadding'])
         self.exitButton = HoverButton(self.saveContainer, text="Exit", command=self.close)
-        self.exitButton.grid(row=0, column=2, pady=constants.fieldPadding, padx=exitPadding)
+        self.exitButton.grid(row=0, column=2, pady=globe['fieldPadding'], padx=exitPadding)
 
     def save(self):
         print("SAVING THINGS")
