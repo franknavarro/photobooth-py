@@ -11,7 +11,6 @@ class FontEntry(tk.Frame):
     def __init__(self, parent, title=None, callback=None, fontcolor="#FFFFFF", fontfamily=None, fontsize=65, fontstyles=""):
         tk.Frame.__init__(self, parent, bg=parent['bg'])
         # Auto size grid
-        self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(3, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
@@ -30,7 +29,7 @@ class FontEntry(tk.Frame):
         if(title):
             self.headerText = title
             self.header = tk.Label(self, font=fontTup, text=self.headerText, bg=self["bg"], fg=darksetting['fg'])
-            self.header.grid(row=0, column=0, pady=(0, halfPad), columnspan=4)
+            self.header.grid(row=0, column=0, pady=(0, pad), columnspan=4)
         else:
             self.headerText = "Font"
 
@@ -50,7 +49,7 @@ class FontEntry(tk.Frame):
             if( fontFam == self.fontfamily ):
                 self.fontindex = index
         self.fontlist.selection_set(first=0)
-        self.fontlist.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(halfPad, halfPad))
+        self.fontlist.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(0, pad))
         self.fontlist.bind('<Button-1>', self.callback)
 
         # Create a variable to hold the value of the fontsize
@@ -62,7 +61,7 @@ class FontEntry(tk.Frame):
         self.sizeEntry = tk.Entry(self, font=fontTup, width=3, relief="flat")
         self.sizeEntry.insert(tk.END, self.fontsize.get())
         self.sizeEntry.config(validate="key", validatecommand=fontvalid)
-        self.sizeEntry.grid(row=2, column=0, sticky="nsew", pady=(halfPad, 0), padx=(0, halfPad))
+        self.sizeEntry.grid(row=2, column=0, sticky="nsew", padx=(0, halfPad))
 
         # Create the bold toggle button
         self.boldButton = ToggleButton(self, font=("", fontTup[1], "bold"), text="B", callback=self.callback, padx=pad, pady=pad)
