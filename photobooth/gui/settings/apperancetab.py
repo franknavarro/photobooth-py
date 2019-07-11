@@ -24,22 +24,33 @@ class ApperanceTab(tk.Frame):
         # A Container to hold the entry fields
         self.entryContainer = tk.Frame(self, bg=self["bg"])
         self.entryContainer.grid(row=0, column=1, sticky="nsew", padx=pad)
-        self.entryContainer.grid_rowconfigure(2, weight=1)
         self.entryContainer.grid_columnconfigure(0, weight=1)
+        #self.entryContainer.grid_rowconfigure(0, weight=1)
+        #self.entryContainer.grid_rowconfigure(1, weight=1)
+        self.entryContainer.grid_rowconfigure(2, weight=1)
+        #self.entryContainer.grid_rowconfigure(3, weight=1)
+        #self.entryContainer.grid_rowconfigure(4, weight=1)
+        self.entryContainer.grid_rowconfigure(5, weight=1)
 
-        # Main Color Editor
+        # Main Editor
+        self.mainLabel = tk.Label(self.entryContainer, text="Main", fg=darksetting['fg'], bg=darksetting['primary'], font=darksetting['font'])
+        self.mainLabel.grid(row=0, column=0, sticky="nsew", pady=(pad, padHalf))
         mainColor = config.get('Apperance', 'mainColor')
-        self.mainColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=mainColor, title="Main Color", autoComplimentary=True, size="")
-        self.mainColor.grid(row=0, column=0, sticky="nsew", pady=(pad, padHalf))
-        # Secondary Color Editor
+        self.mainColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=mainColor, title="Background", autoComplimentary=True, size="compact")
+        self.mainColor.grid(row=1, column=0, sticky="nsew", pady=(padHalf, padHalf))
+        mainFontColor = config.get('Apperance', 'fontColor')
+        self.mainFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=mainFontColor)
+        self.mainFont.grid(row=2, column=0, sticky="nsew", pady=(padHalf, padHalf))
+
+        # Secondary Editor
+        self.secondaryLabel = tk.Label(self.entryContainer, text="Secondary", fg=darksetting['fg'], bg=darksetting['primary'], font=darksetting['font'])
+        self.secondaryLabel.grid(row=3, column=0, sticky="nsew", pady=(pad, padHalf))
         secondaryColor = config.get('Apperance', 'secondaryColor')
-        self.secondaryColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Secondary Color", autoComplimentary=True, complimentaryField=self.mainColor.getColorField(), size="compact")
-        self.mainColor.setComplimentaryField(self.secondaryColor.getColorField())
-        self.secondaryColor.grid(row=1, column=0, sticky="nsew", pady=(padHalf, padHalf))
-        # Font Color Editor
-        self.fontColor = config.get('Apperance', 'fontColor')
-        self.fontEntry = FontEntry(self.entryContainer, title="Font", callback=self.updatePreviewPane)
-        self.fontEntry.grid(row=2, column=0, sticky="nsew", pady=(padHalf, 0))
+        self.secondaryColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Background", autoComplimentary=True, size="compact")
+        self.secondaryColor.grid(row=4, column=0, sticky="nsew", pady=(padHalf, padHalf))
+        secondaryFontColor = config.get('Apperance', 'fontColor')
+        self.secondaryFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFontColor)
+        self.secondaryFont.grid(row=5, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
         # A Canvas that will preview what the options set in the entry fields
         self.previewPane = tk.Frame(self, bg=self["bg"])
@@ -48,10 +59,14 @@ class ApperanceTab(tk.Frame):
         self.previewPane.grid_rowconfigure(1, weight=1)
         self.previewPane.grid_columnconfigure(0, weight=1)
 
-        fontVal = self.fontEntry.getFont()
-        self.previewMain = tk.Label(self.previewPane, bg=self.mainColor.getColor(), text="PHOTOBOOTH", fg=fontVal[1], font=fontVal[0])
+        mainFontVal = self.mainFont.getFont()
+        self.previewMain = tk.Label(self.previewPane, bg=self.mainColor.getColor(), text="PHOTOBOOTH", fg=mainFontVal[1], font=mainFontVal[0])
         self.previewMain.grid(row=0, column=0, sticky="nsew")
-        self.previewSecondary = tk.Label(self.previewPane, bg=self.secondaryColor.getColor(), text="PHOTOBOOTH", fg=fontVal[1], font=fontVal[0])
+
+
+        secondaryFontVal = self.secondaryFont.getFont()
+        self.previewSecondary = tk.Label(self.previewPane, bg=self.secondaryColor.getColor(), text="PHOTOBOOTH", fg=secondaryFontVal[1], font=secondaryFontVal[0])
+
         self.previewSecondary.grid(row=1, column=0, sticky="nsew")
         self.previewText = tk.Label(self.previewPane, bg=darksetting['secondary'], text="Preview", fg=darksetting['fg'], font=darksetting['font'])
         self.previewText.grid(row=2, column=0, sticky='nsew', ipady=pad)
@@ -62,7 +77,9 @@ class ApperanceTab(tk.Frame):
         print("SAVE")
 
     def updatePreviewPane(self, *args):
-        fontVal = self.fontEntry.getFont()
-        self.previewMain.configure(bg=self.mainColor.getColor(), fg=fontVal[1], font=fontVal[0])
-        self.previewSecondary.configure(bg=self.secondaryColor.getColor(), fg=fontVal[1], font=fontVal[0])
+        mainFontVal = self.mainFont.getFont()
+        self.previewMain.configure(bg=self.mainColor.getColor(), fg=mainFontVal[1], font=mainFontVal[0])
+
+        secondaryFontVal = self.secondaryFont.getFont()
+        self.previewSecondary.configure(bg=self.secondaryColor.getColor(), fg=secondaryFontVal[1], font=secondaryFontVal[0])
         
