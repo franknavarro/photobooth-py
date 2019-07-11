@@ -58,13 +58,13 @@ class ColorEntry(tk.Frame):
             # Place the header
             if( title ):
                 self.header.config(text=self.headerText + ":")
-                self.header.grid(row=0, column=0, sticky="nsew", pady=(pad,pad), padx=(0, padHalf))
+                self.header.grid(row=0, column=0, sticky="nsew", padx=(0, padHalf))
             # Place the auto complimentary button
             if( autoComplimentary ):
                 self.autoButton.config(text="C")
-                self.autoButton.grid(row=0, column=2, sticky="nsew", pady=(pad,pad), padx=(pad, 0))
+                self.autoButton.grid(row=0, column=2, sticky="nsew", padx=(pad, 0))
             # Place the preview box
-            self.previewBox.grid(row=0, column=1, sticky="nsew", pady=(pad,pad))
+            self.previewBox.grid(row=0, column=1, sticky="nsew")
         else:
             # Dynamically size everything
             self.grid_columnconfigure(2, weight=1)
@@ -73,15 +73,15 @@ class ColorEntry(tk.Frame):
             # Place the header
             if( title ):
                 self.grid_columnconfigure(0, weight=2)
-                self.header.grid(row=0, column=0, columnspan=4, sticky="sew", pady=(pad, padHalf))
+                self.header.grid(row=0, column=0, columnspan=4, sticky="sew", pady=(0, pad))
             # place the auto complimenatry button
             if( autoComplimentary ):
                 self.grid_columnconfigure(0, weight=2)
-                self.autoButton.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(padHalf, padHalf))
+                self.autoButton.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(0, pad))
             # Place the entry field
-            self.entry.grid(row=2, column=1, sticky="new", pady=(padHalf, pad))
+            self.entry.grid(row=2, column=1, sticky="new")
             # Place the preview box
-            self.previewBox.grid(row=2, column=2, sticky="nsew", pady=(padHalf, pad))
+            self.previewBox.grid(row=2, column=2, sticky="nsew")
 
 
 

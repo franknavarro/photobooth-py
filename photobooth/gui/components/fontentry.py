@@ -5,12 +5,14 @@ from photobooth.settings.constants import globe
 from photobooth.settings.constants import darksetting
 
 from .togglebutton import ToggleButton
+from .colorentry import ColorEntry
 
 class FontEntry(tk.Frame):
     def __init__(self, parent, title=None, callback=None, fontcolor="#FFFFFF", fontfamily=None, fontsize=65, fontstyles=""):
         tk.Frame.__init__(self, parent, bg=parent['bg'])
         # Auto size grid
         self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(3, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
         # Make our bindings to whatever our callback funciton is
@@ -70,6 +72,10 @@ class FontEntry(tk.Frame):
         self.italicButton = ToggleButton(self, font=("", fontTup[1], "italic"), text="I", callback=self.callback, padx=pad, pady=pad)
         self.italicButton.grid(row=2, column=2, sticky="nsew", pady=(halfPad, 0), padx=(halfPad, halfPad))
 
+        # Create the color picker for font
+        self.color = ColorEntry(self, callback=self.callback, color="#FFFFFF", size="compact")
+        self.color.grid(row=2, column=3, sticky="nsew", padx=(halfPad, 0))
+
     def sizeValidation(self, textafter, textinserted):
         # Only allow digit entries 
         if textinserted.isdigit():
@@ -85,6 +91,7 @@ class FontEntry(tk.Frame):
         fontBold = "bold" if self.boldButton.get() else ""
         fontItalic = "italic" if self.italicButton.get() else ""
         fontProps = fontBold + " " + fontItalic
-        return (fontFamily, fontSize,fontProps)
+        fontColor = self.color.getColor()
+        return ((fontFamily, fontSize,fontProps), fontColor)
 
 
