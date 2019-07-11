@@ -48,8 +48,8 @@ class ColorEntry(tk.Frame):
         self.entry.bind('<Button-1>', self.colorPicker)
 
         # Create a Preview Box
-        self.previewBox = tk.Canvas(self, width=25, height=25, bg=self.colorField.get(), cursor="hand1")
-        self.previewBox.bind('<Button-1>', self.colorPicker)
+        self.previewBox = HoverButton(self, bg=self.colorField.get(), command=self.colorPicker)
+        # self.previewBox.bind('<Button-1>', self.colorPicker)
 
         if(size == "compact"):
             # Dynamically size everything
@@ -79,7 +79,7 @@ class ColorEntry(tk.Frame):
                 self.grid_columnconfigure(0, weight=2)
                 self.autoButton.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(0, pad))
             # Place the entry field
-            self.entry.grid(row=2, column=1, sticky="new")
+            self.entry.grid(row=2, column=1, sticky="nsew")
             # Place the preview box
             self.previewBox.grid(row=2, column=2, sticky="nsew")
 
