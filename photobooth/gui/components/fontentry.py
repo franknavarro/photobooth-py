@@ -42,7 +42,7 @@ class FontEntry(tk.Frame):
             self.fontfamily = fontfamilies[0]
 
         # Create the list box for font selection
-        self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single")
+        self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single", selectbackground="blue", exportselection=False)
         # Insert all font families into the list box
         for index, fontFam in enumerate(fontfamilies):
             self.fontlist.insert(tk.END, fontFam)
