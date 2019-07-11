@@ -19,6 +19,16 @@ def hex_complimentary(startHex):
     # Set the new complimentary color
     return newHex
 
+def hex_lighten(hexcolor, lightenAmount):
+    # Convert the color to hsl to lighten or darken
+    hsl = hex_hsl(hexcolor)
+    # Adjust the lightness value
+    newLight = hsl[2] + lightenAmount
+    newHSL = (hsl[0], hsl[1], newLight)
+    # Convert back to hex
+    newHex = hsl_hex(newHSL)
+    return newHex
+
 
 # Helper function for hsl_rgb()
 def hue_rgb(var1, var2, varHue):

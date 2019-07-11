@@ -20,8 +20,8 @@ class ApperanceTab(tk.Frame):
         # A Container to hold the entry fields
         self.entryContainer = tk.Frame(self, bg=self["bg"])
         self.entryContainer.grid(row=0, column=1, sticky="nsew", padx=globe['fieldPadding'])
-        self.entryContainer.grid_rowconfigure(0, weight=1)
-        self.entryContainer.grid_rowconfigure(1, weight=1)
+        self.entryContainer.grid_rowconfigure(0, weight=2)
+        self.entryContainer.grid_rowconfigure(1, weight=2)
         self.entryContainer.grid_rowconfigure(2, weight=1)
         self.entryContainer.grid_columnconfigure(0, weight=1)
 

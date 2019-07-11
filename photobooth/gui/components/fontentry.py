@@ -4,6 +4,8 @@ from tkinter import font
 from photobooth.settings.constants import globe
 from photobooth.settings.constants import darksetting
 
+from .togglebutton import ToggleButton
+
 class FontEntry(tk.Frame):
     def __init__(self, parent, title=None, callback=None, fontcolor="#FFFFFF", fontfamily=None, fontsize=65, fontstyles=""):
         tk.Frame.__init__(self, parent, bg=parent['bg'])
@@ -17,15 +19,16 @@ class FontEntry(tk.Frame):
         else:
             self.callback = self.getFont
 
-        # Padding
+        # Formatting vars
         pad = globe['fieldPadding']
         halfPad = pad/2
+        fontTup = darksetting['font']
         
         # Initialize the header text
         if(title):
             self.headerText = title
-            self.header = tk.Label(self, font=darksetting['font'], text=self.headerText, bg=self["bg"], fg=darksetting['fg'])
-            self.header.grid(row=0, column=0, pady=(0, halfPad))
+            self.header = tk.Label(self, font=fontTup, text=self.headerText, bg=self["bg"], fg=darksetting['fg'])
+            self.header.grid(row=0, column=0, pady=(0, halfPad), columnspan=4)
         else:
             self.headerText = "Font"
 
@@ -38,14 +41,14 @@ class FontEntry(tk.Frame):
             self.fontfamily = fontfamilies[0]
 
         # Create the list box for font selection
-        self.fontlist = tk.Listbox(self, font=darksetting['font'], selectmode="single")
+        self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single")
         # Insert all font families into the list box
         for index, fontFam in enumerate(fontfamilies):
             self.fontlist.insert(tk.END, fontFam)
             if( fontFam == self.fontfamily ):
                 self.fontindex = index
         self.fontlist.selection_set(first=0)
-        self.fontlist.grid(row=1, column=0, sticky="nsew", pady=(halfPad, halfPad))
+        self.fontlist.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(halfPad, halfPad))
         self.fontlist.bind('<Button-1>', self.callback)
 
         # Create a variable to hold the value of the fontsize
@@ -54,11 +57,18 @@ class FontEntry(tk.Frame):
         self.fontsize.trace('w', self.callback)
         # Create the font size entry field
         fontvalid = (self.register(self.sizeValidation), '%P', '%S')
-        self.sizeEntry = tk.Entry(self, font=darksetting['font'], width=3, relief="flat")
+        self.sizeEntry = tk.Entry(self, font=fontTup, width=3, relief="flat")
         self.sizeEntry.insert(tk.END, self.fontsize.get())
         self.sizeEntry.config(validate="key", validatecommand=fontvalid)
         self.sizeEntry.grid(row=2, column=0, sticky="nsew", pady=(halfPad, 0), padx=(0, halfPad))
 
+        # Create the bold toggle button
+        self.boldButton = ToggleButton(self, font=("", fontTup[1], "bold"), text="B", callback=self.callback, padx=pad, pady=pad)
+        self.boldButton.grid(row=2, column=1, sticky="nsew", pady=(halfPad, 0), padx=(halfPad, halfPad))
+
+        # Create the italic toggle button
+        self.italicButton = ToggleButton(self, font=("", fontTup[1], "italic"), text="I", callback=self.callback, padx=pad, pady=pad)
+        self.italicButton.grid(row=2, column=2, sticky="nsew", pady=(halfPad, 0), padx=(halfPad, halfPad))
 
     def sizeValidation(self, textafter, textinserted):
         # Only allow digit entries 
@@ -72,6 +82,9 @@ class FontEntry(tk.Frame):
     def getFont(self):
         fontFamily = self.fontlist.get(tk.ACTIVE)
         fontSize = 0 if self.fontsize.get() == "" else self.fontsize.get()
-        return (fontFamily, fontSize, "bold")
+        fontBold = "bold" if self.boldButton.get() else ""
+        fontItalic = "italic" if self.italicButton.get() else ""
+        fontProps = fontBold + " " + fontItalic
+        return (fontFamily, fontSize,fontProps)
 
 
