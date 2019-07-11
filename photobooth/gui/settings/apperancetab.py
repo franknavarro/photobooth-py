@@ -20,20 +20,18 @@ class ApperanceTab(tk.Frame):
         # A Container to hold the entry fields
         self.entryContainer = tk.Frame(self, bg=self["bg"])
         self.entryContainer.grid(row=0, column=1, sticky="nsew", padx=globe['fieldPadding'])
-        self.entryContainer.grid_rowconfigure(0, weight=2)
-        self.entryContainer.grid_rowconfigure(1, weight=2)
         self.entryContainer.grid_rowconfigure(2, weight=1)
         self.entryContainer.grid_columnconfigure(0, weight=1)
 
         # Main Color Editor
         mainColor = config.get('Apperance', 'mainColor')
-        self.mainColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=mainColor, title="Main Color", autoComplimentary=True)
-        self.mainColor.grid(row=0, column=0)
+        self.mainColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=mainColor, title="Main Color", autoComplimentary=True, size="")
+        self.mainColor.grid(row=0, column=0, sticky="nsew")
         # Secondary Color Editor
         secondaryColor = config.get('Apperance', 'secondaryColor')
-        self.secondaryColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Secondary Color", autoComplimentary=True, complimentaryField=self.mainColor.getColorField())
+        self.secondaryColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Secondary Color", autoComplimentary=True, complimentaryField=self.mainColor.getColorField(), size="compact")
         self.mainColor.setComplimentaryField(self.secondaryColor.getColorField())
-        self.secondaryColor.grid(row=1, column=0)
+        self.secondaryColor.grid(row=1, column=0, sticky="nsew")
         # Font Color Editor
         self.fontColor = config.get('Apperance', 'fontColor')
         self.fontEntry = FontEntry(self.entryContainer, title="Font", callback=self.updatePreviewPane)

@@ -10,13 +10,12 @@ from .hoverbutton import HoverButton
 from photobooth.settings import config
 
 class ColorEntry(tk.Frame):
-    def __init__(self, parent, title=None, callback=None, color="#000000", autoComplimentary=False, complimentaryField=None):
+    def __init__(self, parent, title=None, callback=None, color="#000000", autoComplimentary=False, complimentaryField=None, size=None):
         tk.Frame.__init__(self, parent, bg=parent['bg'])
-        # Take up the full row height
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(2, weight=1)
+
+        # Formatting vars
+        pad = globe['fieldPadding']
+        padHalf = globe['fieldPadding']/2
 
         # Set the color for the field
         self.colorField = tk.StringVar()
@@ -34,22 +33,58 @@ class ColorEntry(tk.Frame):
             self.complimentaryField.set("#000000")
 
         # Initialize the header text
-        if(title):
+        if( title ):
             self.headerText = title
-            self.header = tk.Label(self, font=darksetting['font'], text=self.headerText, bg=self["bg"], fg=darksetting['fg'])
-            self.header.grid(row=0, column=0, columnspan=3, sticky="sew", pady=(0, globe['fieldPadding']/2))
         else:
             self.headerText = "Color"
+        # Create the header 
+        self.header = tk.Label(self, font=darksetting['font'], text=self.headerText, bg=self["bg"], fg=darksetting['fg'])
 
         # Show a button to auto get the complimentary color 
-        if ( autoComplimentary ):
-            self.autoButton = HoverButton(self, text="Get Complimentary", command=self.computeComplimentary)
-            self.autoButton.grid(row=1, column=0, columnspan=3, sticky="nsew", pady=(globe['fieldPadding']/2, globe['fieldPadding']/2))
+        self.autoButton = HoverButton(self, text="Get Complimentary", command=self.computeComplimentary)
 
         # Initialize the text entry field
         self.entry = tk.Entry(self, font=darksetting['font'], width=8, relief="flat", textvariable=self.colorField, state="readonly", readonlybackground="white")
-        self.entry.grid(row=2, column=1, sticky="new", pady=(globe['fieldPadding']/2, globe['fieldPadding']*2))
         self.entry.bind('<Button-1>', self.colorPicker)
+
+        # Create a Preview Box
+        self.previewBox = tk.Canvas(self, width=25, height=25, bg=self.colorField.get(), cursor="hand1")
+        self.previewBox.bind('<Button-1>', self.colorPicker)
+
+        if(size == "compact"):
+            # Dynamically size everything
+            self.grid_rowconfigure(0, weight=1)
+            self.grid_columnconfigure(1, weight=1)
+            # Place the header
+            if( title ):
+                self.header.config(text=self.headerText + ":")
+                self.header.grid(row=0, column=0, sticky="nsew", pady=(pad,pad), padx=(0, padHalf))
+            # Place the auto complimentary button
+            if( autoComplimentary ):
+                self.autoButton.config(text="C")
+                self.autoButton.grid(row=0, column=2, sticky="nsew", pady=(pad,pad), padx=(pad, 0))
+            # Place the preview box
+            self.previewBox.grid(row=0, column=1, sticky="nsew", pady=(pad,pad))
+        else:
+            # Dynamically size everything
+            self.grid_columnconfigure(2, weight=1)
+            self.grid_columnconfigure(3, weight=2)
+            self.grid_rowconfigure(0, weight=1)
+            # Place the header
+            if( title ):
+                self.grid_columnconfigure(0, weight=2)
+                self.header.grid(row=0, column=0, columnspan=4, sticky="sew", pady=(pad, padHalf))
+            # place the auto complimenatry button
+            if( autoComplimentary ):
+                self.grid_columnconfigure(0, weight=2)
+                self.autoButton.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(padHalf, padHalf))
+            # Place the entry field
+            self.entry.grid(row=2, column=1, sticky="new", pady=(padHalf, pad))
+            # Place the preview box
+            self.previewBox.grid(row=2, column=2, sticky="nsew", pady=(padHalf, pad))
+
+
+
 
     # Helper function to get and return the color field to use as a reference else where
     def getColorField(self):
@@ -66,10 +101,12 @@ class ColorEntry(tk.Frame):
     def computeComplimentary(self):
         complimentary = colorconvert.hex_complimentary(self.complimentaryField.get())
         self.colorField.set(complimentary)
+        self.previewBox.config(bg=self.colorField.get())
 
     # Reviels the color picker field (OS dependant)
     def colorPicker(self, event=None):
         tempColor = colorchooser.askcolor(initialcolor=self.colorField.get(), title=self.headerText)
         if(tempColor[1]):
             self.colorField.set(tempColor[1].upper())
+            self.previewBox.config(bg=self.colorField.get())
 
