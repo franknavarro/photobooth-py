@@ -45,7 +45,8 @@ class PrintPage(tk.Frame):
         # Update all the text for this page
         self.topText.hideText()
         self.botText.hideText()
-        self.text = self.canvas.create_text(0, 0, fill=config.get('Apperance', 'fontColor'), text=self.printText, font=("Droid", 65, "bold"), anchor="nw")
+        fontConfig = config.getFont('main')
+        self.text = self.canvas.create_text(0, 0, fill=fontConfig[1], text=self.printText, font=fontConfig[0], anchor="nw")
         self.dots = ""
         # Get the selected image
         self.printImage = self.controller.printImage

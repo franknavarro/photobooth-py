@@ -1,16 +1,14 @@
 import tkinter as tk
 
-from photobooth.settings import config
-
 from photobooth.settings.constants import darksetting
 
 class TabLabel(tk.Label):
-    def __init__(self, parent, controller, index, text, bgcolor=darksetting['primary'], unselectedcolor=darksetting['secondary']):
+    def __init__(self, parent, controller, index, text, bgcolor=darksetting['primary'], unselectedcolor=darksetting['secondary'], font=darksetting['font'], fg=darksetting['fg'], cursor='hand1'):
         self.controller = controller
         self.bgcolor = bgcolor
         self.unselectedcolor = unselectedcolor
 
-        tk.Label.__init__(self, parent, bg=self.unselectedcolor, text=text, font=darksetting['font'], fg=darksetting['fg'], cursor="hand1")
+        tk.Label.__init__(self, parent, bg=self.unselectedcolor, text=text, font=font, fg=fg, cursor=cursor)
 
         self.grid_configure(ipadx=20, ipady=20)
 

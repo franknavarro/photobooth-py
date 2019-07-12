@@ -1,8 +1,8 @@
 import tkinter as tk
-from tkinter import font
 
 from photobooth.settings.constants import globe
 from photobooth.settings.constants import darksetting
+from photobooth.settings.constants import systemFonts
 
 from .togglebutton import ToggleButton
 from .colorentry import ColorEntry
@@ -33,18 +33,16 @@ class FontEntry(tk.Frame):
         else:
             self.headerText = "Font"
 
-        # Remove any duplicate font familes and sort them in alphabetical order
-        fontfamilies = sorted( list( dict.fromkeys(font.families()) ) )
         # Set the default font family
         if(fontfamily):
             self.fontfamily = fontfamily
         else:
-            self.fontfamily = fontfamilies[0]
+            self.fontfamily = systemFonts[0]
 
         # Create the list box for font selection
         self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single", selectbackground="blue", exportselection=False)
         # Insert all font families into the list box
-        for index, fontFam in enumerate(fontfamilies):
+        for index, fontFam in enumerate(systemFonts):
             self.fontlist.insert(tk.END, fontFam)
             if( fontFam == self.fontfamily ):
                 self.fontindex = index

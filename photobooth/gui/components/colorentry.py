@@ -7,7 +7,6 @@ from photobooth.settings.constants import globe
 from photobooth.settings.constants import darksetting
 
 from .hoverbutton import HoverButton
-from photobooth.settings import config
 
 class ColorEntry(tk.Frame):
     def __init__(self, parent, title=None, callback=None, color="#000000", autoComplimentary=False, complimentaryField=None, size=None):

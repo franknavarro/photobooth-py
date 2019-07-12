@@ -3,19 +3,11 @@ from photobooth.settings import config
 
 
 class StripSelector(tk.Frame):
-    def __init__ (self, parent, photostrip, **kwargs):
-        tk.Frame.__init__(self, parent, bg=parent["bg"])
+    def __init__ (self, parent, photostrip, selected=False, option='color', toggleHighlight=config.get('Apperance', 'secondaryColor'),  font=config.getFont('secondary'), **kwargs):
+        tk.Frame.__init__(self, parent, bg=parent["bg"], **kwargs)
 
-        if 'selected' in kwargs:
-            self.selected = kwargs.get('selected')
-        else:
-            self.selected = False
-
-        # Get the option passed in if there was one
-        if 'option' in kwargs:
-            self.option = kwargs.get('option')
-        else:
-            self.option = 'color'
+        self.selected = selected
+        self.option = option
 
         # Get preset depending on the option
         if self.option == "grayscale":
@@ -37,10 +29,10 @@ class StripSelector(tk.Frame):
         self.image.grid(row=0, column=0, sticky="nsew") 
 
         # Create the text
-        self.text = tk.Label(self, text=text, bg=self["bg"], font=("Droid", 45, "bold"), fg="white")
+        self.text = tk.Label(self, text=text, bg=self["bg"], font=font[0], fg=font[1])
         self.text.grid(row=1, column=0, sticky="nsew")
 
-        self.highlightColor = config.get('Apperance', 'secondaryColor')
+        self.highlightColor = toggleHighlight
         if self.selected:
             self.text.configure( bg=self.highlightColor )
 

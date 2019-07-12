@@ -1,6 +1,7 @@
 import configparser
 import json
 import os
+from .constants import systemFonts
 
 
 class MyConfigParser(configparser.SafeConfigParser):
@@ -12,9 +13,16 @@ class MyConfigParser(configparser.SafeConfigParser):
         # Set the default Apperance values
         self['Apperance'] = {
             'mainColor':'#F2AFB0',
+            'mainFontFamily': systemFonts[0],
+            'mainFontSize': 65,
+            'mainFontSettings': 'bold',
+            'mainFontColor': '#FFFFFF',
+
             'secondaryColor':'#AFF2F1',
-            'fontColor': '#FFFFFF',
-            'font': '["Droid", 65, "bold"]'
+            'secondaryFontFamily': systemFonts[0],
+            'secondaryFontSize': 45,
+            'secondaryFontSettings': 'bold',
+            'secondaryFontColor': '#FFFFFF'
         }
 
         # Set the default Interaction values
@@ -38,6 +46,15 @@ class MyConfigParser(configparser.SafeConfigParser):
         }
 
         self.readFromFile()
+
+    def getFont(self, typeF):
+        fontTuple = (
+            self.get('Apperance', typeF+'FontFamily'),
+            self.get('Apperance', typeF+'FontSize'),
+            self.get('Apperance', typeF+'FontSettings')
+        )
+        fontColor = self.get('Apperance', typeF+'FontColor')
+        return (fontTuple, fontColor)
 
     def getlist(self, section, subsection):
         return json.loads(self.get(section, subsection))

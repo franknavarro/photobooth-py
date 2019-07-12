@@ -38,8 +38,8 @@ class ApperanceTab(tk.Frame):
         mainColor = config.get('Apperance', 'mainColor')
         self.mainColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=mainColor, title="Background", autoComplimentary=True, size="compact")
         self.mainColor.grid(row=1, column=0, sticky="nsew", pady=(padHalf, padHalf))
-        mainFontColor = config.get('Apperance', 'fontColor')
-        self.mainFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=mainFontColor)
+        mainFont = config.getFont('main')
+        self.mainFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=mainFont[1], fontfamily=mainFont[0][0], fontsize=mainFont[0][1], fontstyles=mainFont[0][2])
         self.mainFont.grid(row=2, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
         # Secondary Editor
@@ -48,8 +48,8 @@ class ApperanceTab(tk.Frame):
         secondaryColor = config.get('Apperance', 'secondaryColor')
         self.secondaryColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Background", autoComplimentary=True, size="compact")
         self.secondaryColor.grid(row=4, column=0, sticky="nsew", pady=(padHalf, padHalf))
-        secondaryFontColor = config.get('Apperance', 'fontColor')
-        self.secondaryFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFontColor)
+        secondaryFont = config.getFont('secondary')
+        self.secondaryFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFont[1], fontfamily=secondaryFont[0][0], fontsize=secondaryFont[0][1], fontstyles=secondaryFont[0][2])
         self.secondaryFont.grid(row=5, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
         # A Canvas that will preview what the options set in the entry fields
