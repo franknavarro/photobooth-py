@@ -5,3 +5,6 @@ class InteractionsTab(tk.Frame):
         tk.Frame.__init__(self, parent, bg="#15dbcc")
 
         self.controller = controller
+
+    def save(self):
+        print("SAVING INTERACTIONS")

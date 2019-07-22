@@ -74,7 +74,7 @@ class ApperanceTab(tk.Frame):
 
 
     def save(self):
-        print("SAVE")
+        print("SAVING APPERANCES")
 
     def updatePreviewPane(self, *args):
         mainFontVal = self.mainFont.getFont()

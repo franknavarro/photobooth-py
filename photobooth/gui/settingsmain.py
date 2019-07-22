@@ -63,8 +63,9 @@ class SettingsMain(tk.Frame):
         self.exitButton = HoverButton(self.saveContainer, text="Exit", command=self.close)
         self.exitButton.grid(row=0, column=2, pady=globe['fieldPadding'], padx=exitPadding)
 
+    # Call the save function for the relative tab
     def save(self):
-        print("SAVING THINGS")
+        self.frames[self.activeTab].save()
 
     # Perform any initial configurations
     def open(self):

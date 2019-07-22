@@ -5,3 +5,6 @@ class PhotostripTab(tk.Frame):
         tk.Frame.__init__(self, parent, bg="#48a90a")
 
         self.controller = controller
+
+    def save(self):
+        print("SAVING PHOTOSTRIP")
