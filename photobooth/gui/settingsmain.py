@@ -10,6 +10,8 @@ from .components.hoverbutton import HoverButton
 from  photobooth.settings.constants import globe
 from  photobooth.settings.constants import darksetting
 
+from photobooth.settings import config
+
 class SettingsMain(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=darksetting["primary"])
@@ -65,7 +67,15 @@ class SettingsMain(tk.Frame):
 
     # Call the save function for the relative tab
     def save(self):
-        self.frames[self.activeTab].save()
+        # Go through and update each relevant config
+        saveConfigs = self.frames[self.activeTab].save()
+        for settingField, settings in saveConfigs.items():
+            for setting, settingVal in settings.items():
+                config[settingField][setting] = settingVal
+
+        # Save the file
+        config.saveToFile()
+
 
     # Perform any initial configurations
     def open(self):

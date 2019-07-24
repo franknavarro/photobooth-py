@@ -52,7 +52,7 @@ class ApperanceTab(tk.Frame):
         self.secondaryFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFont[1], fontfamily=secondaryFont[0][0], fontsize=secondaryFont[0][1], fontstyles=secondaryFont[0][2])
         self.secondaryFont.grid(row=5, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
-        # A Canvas that will preview what the options set in the entry fields
+        # Preview the options set in the entry fields
         self.previewPane = tk.Frame(self, bg=self["bg"])
         self.previewPane.grid(row=0, column=0, sticky="nsew")
         self.previewPane.grid_rowconfigure(0, weight=1)
@@ -72,9 +72,24 @@ class ApperanceTab(tk.Frame):
         self.previewText.grid(row=2, column=0, sticky='nsew', ipady=pad)
 
 
-
     def save(self):
-        print("SAVING APPERANCES")
+        mainFontVal = self.mainFont.getFont()
+        secondaryFontVal = self.secondaryFont.getFont()
+        saveApperances = {
+            'mainColor': self.mainColor.getColor(),
+            'mainFontFamily': mainFontVal[0][0],
+            'mainFontSize': mainFontVal[0][1],
+            'mainFontSettings': mainFontVal[0][2],
+            'mainFontColor': mainFontVal[1],
+
+            'secondaryColor': self.secondaryColor.getColor(),
+            'secondaryFontFamily': secondaryFontVal[0][0],
+            'secondaryFontSize': secondaryFontVal[0][1],
+            'secondaryFontSettings': secondaryFontVal[0][2],
+            'secondaryFontColor': secondaryFontVal[1]
+        }
+        return {'Apperance': saveApperances}
+
 
     def updatePreviewPane(self, *args):
         mainFontVal = self.mainFont.getFont()
