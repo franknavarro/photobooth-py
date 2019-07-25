@@ -76,6 +76,8 @@ class SettingsMain(tk.Frame):
         # Save the file
         config.saveToFile()
 
+        self.controller.restartMain()
+
 
     # Perform any initial configurations
     def open(self):

@@ -62,6 +62,25 @@ class RootWindow(tk.Tk):
         # Show the settings page
         self.show_frame(SettingsMain)
 
+    def restartMain(self):
+        # Close the camera instance to avoid resource error
+        self.campage.camera.close()
+        # Remove reference to original application frame
+        oldApp = self.frames[MainApplication]
+        oldApp.grid_forget()
+        oldApp.destroy()
+        del self.frames[MainApplication]
+        del oldApp
+        # Re-initialize the entire application
+        self.container.configure(bg=config.get('Apperance', 'mainColor'))
+        mainapp = MainApplication(self.container, self)
+        self.frames[MainApplication] = mainapp
+        mainapp.grid(row=0, column=0, stick="nsew")
+        self.show_frame(SettingsMain)
+        # Save the new camera page created
+        self.campage = mainapp.getCameraPage()
+
+
     # Show the Main Application
     def showMain(self, event=None):
         # Bind the 's' key to the settings menu
