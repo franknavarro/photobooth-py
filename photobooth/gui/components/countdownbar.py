@@ -3,11 +3,16 @@ import math
 from photobooth.settings import config
 
 class CountDownBar(tk.Canvas):
-    def __init__ (self, parent, color=config.get('Apperance', 'secondaryColor'), **kwargs):
-        self.color = color  # bar color
+    def __init__ (self, parent, **kwargs):
         self.backColor = parent["bg"] # Save for later
         # Start as background as the bar color so that the bar looks filled to start
         tk.Canvas.__init__(self, parent, bg=self.backColor, bd=0, highlightthickness=0, relief='flat')
+
+        # Check if the color is defined if not get the config for the bar
+        if 'color' in kwargs:
+            self.color = kwargs.get('color')
+        else:
+            self.color = config.get('Apperance', 'secondaryColor')
 
         # Check if the height is defined
         if 'height' in kwargs:

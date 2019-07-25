@@ -3,8 +3,20 @@ from photobooth.settings import config
 
 
 class StripSelector(tk.Frame):
-    def __init__ (self, parent, photostrip, selected=False, option='color', toggleHighlight=config.get('Apperance', 'secondaryColor'),  font=config.getFont('secondary'), **kwargs):
+    def __init__ (self, parent, photostrip, selected=False, option='color', **kwargs):
         tk.Frame.__init__(self, parent, bg=parent["bg"], **kwargs)
+
+        # Get the toggled background color
+        if 'toggleHighlight' in kwargs:
+            toggleHighlight = kwargs.get('toggleHighlight')
+        else:
+            toggleHighlight = config.get('Apperance', 'secondaryColor')
+
+        # Get the font used
+        if 'font' in kwargs:
+            font = kwargs.get('font')
+        else:
+            font = config.getFont('secondary')
 
         self.selected = selected
         self.option = option

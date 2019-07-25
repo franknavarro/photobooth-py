@@ -4,8 +4,14 @@ from photobooth.settings import config
 
 # A class to format the bottom and top text of the application
 class LabelText(tk.Frame):
-    def __init__(self, parent, initText, font=config.getFont('main')):
+    def __init__(self, parent, initText, **kwargs):
         tk.Frame.__init__(self, parent, bg=parent["bg"])
+
+        # Check if font was defined if not get the config version
+        if 'font' in kwargs:
+            font = kwargs.get('font')
+        else:
+            font = config.getFont('main')
 
         # Size the contents of this Frame appropriately
         self.grid_columnconfigure(0, weight=1)

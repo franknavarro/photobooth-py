@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 from .settings.apperancetab import ApperanceTab
 from .settings.interactionstab import InteractionsTab
@@ -77,6 +78,8 @@ class SettingsMain(tk.Frame):
         config.saveToFile()
 
         self.controller.restartMain()
+        messagebox.showinfo("Saved", "Your settings have been saved and applied!")
+        
 
 
     # Perform any initial configurations
