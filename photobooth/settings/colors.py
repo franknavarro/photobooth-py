@@ -16,6 +16,7 @@ def hex_complimentary(startHex):
     #print("COMPLIMENTARY HSL: ", newHSL)
     # Convert back to hex color
     newHex = hsl_hex(newHSL)
+    #print("NEW HEX: ", newHex)
     # Set the new complimentary color
     return newHex
 

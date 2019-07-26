@@ -52,6 +52,10 @@ class ApperanceTab(tk.Frame):
         self.secondaryFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFont[1], fontfamily=secondaryFont[0][0], fontsize=secondaryFont[0][1], fontstyles=secondaryFont[0][2])
         self.secondaryFont.grid(row=5, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
+        # Make sure each color field has a reference to the other to compute complimentary fields
+        self.mainColor.setComplimentaryField(self.secondaryColor.getColorField())
+        self.secondaryColor.setComplimentaryField(self.mainColor.getColorField())
+
         # Preview the options set in the entry fields
         self.previewPane = tk.Frame(self, bg=self["bg"])
         self.previewPane.grid(row=0, column=0, sticky="nsew")
