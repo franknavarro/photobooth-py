@@ -25,32 +25,49 @@ class ApperanceTab(tk.Frame):
         self.entryContainer = tk.Frame(self, bg=self["bg"])
         self.entryContainer.grid(row=0, column=1, sticky="nsew", padx=pad)
         self.entryContainer.grid_columnconfigure(0, weight=1)
-        #self.entryContainer.grid_rowconfigure(0, weight=1)
-        #self.entryContainer.grid_rowconfigure(1, weight=1)
-        self.entryContainer.grid_rowconfigure(2, weight=1)
-        #self.entryContainer.grid_rowconfigure(3, weight=1)
-        #self.entryContainer.grid_rowconfigure(4, weight=1)
-        self.entryContainer.grid_rowconfigure(5, weight=1)
+        self.entryContainer.grid_rowconfigure(0, weight=1)
+        self.entryContainer.grid_rowconfigure(1, weight=1)
+
 
         # Main Editor
-        self.mainLabel = tk.Label(self.entryContainer, text="Main", fg=darksetting['fg'], bg=darksetting['primary'], font=darksetting['font'])
+        self.mainContainer = tk.Frame(self.entryContainer, bg=self["bg"])
+        self.mainContainer.grid(row=0, column=0, sticky="nsew")
+
+        self.mainLabel = tk.Label(self.mainContainer, text="Main", fg=darksetting['fg'], bg=darksetting['primary'], font=darksetting['font'])
         self.mainLabel.grid(row=0, column=0, sticky="nsew", pady=(pad, padHalf))
+
         mainColor = config.get('Apperance', 'mainColor')
-        self.mainColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=mainColor, title="Background", autoComplimentary=True, size="compact")
+        self.mainColor = ColorEntry(self.mainContainer, callback=self.updatePreviewPane, color=mainColor, title="Background", autoComplimentary=True, size="compact")
         self.mainColor.grid(row=1, column=0, sticky="nsew", pady=(padHalf, padHalf))
+
         mainFont = config.getFont('main')
-        self.mainFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=mainFont[1], fontfamily=mainFont[0][0], fontsize=mainFont[0][1], fontstyles=mainFont[0][2])
+        self.mainFont = FontEntry(self.mainContainer, callback=self.updatePreviewPane, fontcolor=mainFont[1], fontfamily=mainFont[0][0], fontsize=mainFont[0][1], fontstyles=mainFont[0][2])
         self.mainFont.grid(row=2, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
+        self.mainPreviewText = tk.StringVar(self)
+        self.mainPreviewText.set("Preview Text 1")
+        self.mainPreviewEntry = tk.Entry(self.mainContainer, font=darksetting['font'], textvariable=self.mainPreviewText)
+        self.mainPreviewEntry.grid(row=3, column=0, sticky="nsew", pady=(padHalf, padHalf))
+
         # Secondary Editor
-        self.secondaryLabel = tk.Label(self.entryContainer, text="Secondary", fg=darksetting['fg'], bg=darksetting['primary'], font=darksetting['font'])
-        self.secondaryLabel.grid(row=3, column=0, sticky="nsew", pady=(pad, padHalf))
+        self.secondaryContainer = tk.Frame(self.entryContainer, bg=self["bg"])
+        self.secondaryContainer.grid(row=1, column=0, sticky="nsew")
+
+        self.secondaryLabel = tk.Label(self.secondaryContainer, text="Secondary", fg=darksetting['fg'], bg=darksetting['primary'], font=darksetting['font'])
+        self.secondaryLabel.grid(row=4, column=0, sticky="nsew", pady=(pad, padHalf))
+
         secondaryColor = config.get('Apperance', 'secondaryColor')
-        self.secondaryColor = ColorEntry(self.entryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Background", autoComplimentary=True, size="compact")
-        self.secondaryColor.grid(row=4, column=0, sticky="nsew", pady=(padHalf, padHalf))
+        self.secondaryColor = ColorEntry(self.secondaryContainer, callback=self.updatePreviewPane, color=secondaryColor, title="Background", autoComplimentary=True, size="compact")
+        self.secondaryColor.grid(row=5, column=0, sticky="nsew", pady=(padHalf, padHalf))
+
         secondaryFont = config.getFont('secondary')
-        self.secondaryFont = FontEntry(self.entryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFont[1], fontfamily=secondaryFont[0][0], fontsize=secondaryFont[0][1], fontstyles=secondaryFont[0][2])
-        self.secondaryFont.grid(row=5, column=0, sticky="nsew", pady=(padHalf, padHalf))
+        self.secondaryFont = FontEntry(self.secondaryContainer, callback=self.updatePreviewPane, fontcolor=secondaryFont[1], fontfamily=secondaryFont[0][0], fontsize=secondaryFont[0][1], fontstyles=secondaryFont[0][2])
+        self.secondaryFont.grid(row=6, column=0, sticky="nsew", pady=(padHalf, padHalf))
+
+        self.secondaryPreviewText = tk.StringVar(self)
+        self.secondaryPreviewText.set("Preview Text 2")
+        self.secondaryPreviewEntry = tk.Entry(self.secondaryContainer, font=darksetting['font'], textvariable=self.secondaryPreviewText)
+        self.secondaryPreviewEntry.grid(row=7, column=0, sticky="nsew", pady=(padHalf, padHalf))
 
         # Make sure each color field has a reference to the other to compute complimentary fields
         self.mainColor.setComplimentaryField(self.secondaryColor.getColorField())
@@ -65,12 +82,12 @@ class ApperanceTab(tk.Frame):
 
         mainFontVal = self.mainFont.getFont()
         print("Main Initial Font: ", mainFontVal)
-        self.previewMain = tk.Label(self.previewPane, bg=self.mainColor.getColor(), text="PHOTOBOOTH", fg=mainFontVal[1], font=mainFontVal[0])
+        self.previewMain = tk.Label(self.previewPane, bg=self.mainColor.getColor(), textvariable=self.mainPreviewText, fg=mainFontVal[1], font=mainFontVal[0])
         self.previewMain.grid(row=0, column=0, sticky="nsew")
 
 
         secondaryFontVal = self.secondaryFont.getFont()
-        self.previewSecondary = tk.Label(self.previewPane, bg=self.secondaryColor.getColor(), text="PHOTOBOOTH", fg=secondaryFontVal[1], font=secondaryFontVal[0])
+        self.previewSecondary = tk.Label(self.previewPane, bg=self.secondaryColor.getColor(), textvariable=self.secondaryPreviewText, fg=secondaryFontVal[1], font=secondaryFontVal[0])
 
         self.previewSecondary.grid(row=1, column=0, sticky="nsew")
         self.previewText = tk.Label(self.previewPane, bg=darksetting['secondary'], text="Preview", fg=darksetting['fg'], font=darksetting['font'])
