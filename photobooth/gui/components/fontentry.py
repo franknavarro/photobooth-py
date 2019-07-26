@@ -43,17 +43,10 @@ class FontEntry(tk.Frame):
             self.fontidenx = 0
 
         # Create the list box for font selection
-        #self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single", selectbackground="blue", exportselection=False)
-        # Insert all font families into the list box
-        #for index, fontFam in enumerate(systemFonts):
-            #self.fontlist.insert(tk.END, fontFam)
-        #self.fontlist.selection_set(first=self.fontindex)
-        #self.fontlist.see(self.fontindex)
         self.fontlist = ttk.Combobox(self, font=fontTup, values=systemFonts, state="readonly")
         self.fontlist.current(self.fontindex)
         self.fontlist.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(0, pad))
         self.fontlist.bind('<<ComboboxSelected>>', self.callback)
-        #self.fontlist.bind('<Button-1>', self.callback)
 
 
         # Create a variable to hold the value of the fontsize
