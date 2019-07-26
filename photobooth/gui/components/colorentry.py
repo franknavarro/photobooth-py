@@ -100,12 +100,12 @@ class ColorEntry(tk.Frame):
     def computeComplimentary(self):
         complimentary = colorconvert.hex_complimentary(self.complimentaryField.get())
         self.colorField.set(complimentary)
-        self.previewBox.config(bg=self.colorField.get())
+        self.previewBox.changeBackground(self.colorField.get())
 
     # Reviels the color picker field (OS dependant)
     def colorPicker(self, event=None):
         tempColor = colorchooser.askcolor(initialcolor=self.colorField.get(), title=self.headerText)
         if(tempColor[1]):
             self.colorField.set(tempColor[1].upper())
-            self.previewBox.config(bg=self.colorField.get())
+            self.previewBox.changeBackground(self.colorField.get())
 
