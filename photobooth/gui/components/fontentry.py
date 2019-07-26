@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 from photobooth.settings.constants import globe
 from photobooth.settings.constants import darksetting
@@ -12,7 +13,7 @@ class FontEntry(tk.Frame):
         tk.Frame.__init__(self, parent, bg=parent['bg'])
         # Auto size grid
         self.grid_columnconfigure(3, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        #self.grid_rowconfigure(1, weight=1)
 
         # Make our bindings to whatever our callback funciton is
         if(callback):
@@ -36,19 +37,24 @@ class FontEntry(tk.Frame):
         # Set the default font family
         if(fontfamily):
             self.fontfamily = fontfamily
+            self.fontindex = systemFonts.index(self.fontfamily)
         else:
             self.fontfamily = systemFonts[0]
+            self.fontidenx = 0
 
         # Create the list box for font selection
-        self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single", selectbackground="blue", exportselection=False)
+        #self.fontlist = tk.Listbox(self, font=fontTup, selectmode="single", selectbackground="blue", exportselection=False)
         # Insert all font families into the list box
-        for index, fontFam in enumerate(systemFonts):
-            self.fontlist.insert(tk.END, fontFam)
-            if( fontFam == self.fontfamily ):
-                self.fontindex = index
-        self.fontlist.selection_set(first=0)
+        #for index, fontFam in enumerate(systemFonts):
+            #self.fontlist.insert(tk.END, fontFam)
+        #self.fontlist.selection_set(first=self.fontindex)
+        #self.fontlist.see(self.fontindex)
+        self.fontlist = ttk.Combobox(self, font=fontTup, values=systemFonts, state="readonly")
+        self.fontlist.current(self.fontindex)
         self.fontlist.grid(row=1, column=0, columnspan=4, sticky="nsew", pady=(0, pad))
-        self.fontlist.bind('<Button-1>', self.callback)
+        self.fontlist.bind('<<ComboboxSelected>>', self.callback)
+        #self.fontlist.bind('<Button-1>', self.callback)
+
 
         # Create a variable to hold the value of the fontsize
         self.fontsize = tk.StringVar()
@@ -83,7 +89,7 @@ class FontEntry(tk.Frame):
         
 
     def getFont(self):
-        fontFamily = self.fontlist.get(tk.ACTIVE)
+        fontFamily = self.fontlist.get()
         fontSize = 0 if self.fontsize.get() == "" else self.fontsize.get()
         fontBold = "bold" if self.boldButton.get() else ""
         fontItalic = "italic" if self.italicButton.get() else ""

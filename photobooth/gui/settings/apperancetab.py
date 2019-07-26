@@ -60,6 +60,7 @@ class ApperanceTab(tk.Frame):
         self.previewPane.grid_columnconfigure(0, weight=1)
 
         mainFontVal = self.mainFont.getFont()
+        print("Main Initial Font: ", mainFontVal)
         self.previewMain = tk.Label(self.previewPane, bg=self.mainColor.getColor(), text="PHOTOBOOTH", fg=mainFontVal[1], font=mainFontVal[0])
         self.previewMain.grid(row=0, column=0, sticky="nsew")
 
