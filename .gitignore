@@ -3,5 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# config file
+config.ini
+
 #vim files
 .*.sw[mnop]
